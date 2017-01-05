@@ -1,0 +1,314 @@
+﻿@{
+    string controller = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+    string action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+    var sysEntity = MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().ListCache("syssetting").FirstOrDefault();
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+}
+
+@*<link href="~/Theme/160817_Layout/css/standard.css" rel="stylesheet" />
+    <link href="~/Theme/160817_Layout/css/sjs888.css" rel="stylesheet" />
+    <link href="~/Theme/160817_Layout/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/Theme/160817_Layout/css/style.css" rel="stylesheet" />*@
+@*<script src="~/Scripts/jquery-1.11.0.min.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>*@
+
+<script src="~/Theme/102001/css/dist/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="~/js/0817/jquery.min.js"></script>
+<script src="/theme/neon/assets/js/gsap/main-gsap.js"></script>
+<script src="/theme/neon/assets/js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js"></script>
+<script src="/theme/neon/assets/js/bootstrap.js"></script>
+<script src="/theme/neon/assets/js/joinable.js"></script>
+<script src="/theme/neon/assets/js/resizeable.js"></script>
+<script src="/theme/neon/assets/js/morris.min.js"></script>
+<script src="/theme/neon/assets/js/toastr.js"></script>
+<script src="/theme/neon/assets/js/neon-custom.js"></script>
+<script src="/theme/neon/assets/js/neon-demo.js"></script>
+<script src="/theme/neon/assets/js/neon-api.js"></script>
+
+@*<link rel="stylesheet" href="/theme/neon/assets/js/daterangepicker/daterangepicker-bs3.css" />
+    <script src="/theme/neon/assets/js/daterangepicker/moment.min.js"></script>
+    <script src="/theme/neon/assets/js/daterangepicker/daterangepicker.js"></script>*@
+<script src="/theme/neon/assets/js/bootstrap-datepicker.js"></script>
+<script src="/theme/neon/assets/js/bootstrap-timepicker.min.js"></script>
+<script src="~/Theme/bootbox.min.js"></script>
+@*<script src="/Scripts/jn.js"></script>*@
+
+
+<link rel="stylesheet" href="/theme/neon/assets/css/bootstrap.css" />
+<link rel="stylesheet" href="/theme/neon/assets/css/neon-forms.css" />
+<link rel="stylesheet" href="/theme/neon/assets/css/neon-core.css" />
+<link rel="stylesheet" href="/theme/neon/assets/css/neon-theme.css" />
+<link rel="stylesheet" href="/theme/neon/assets/css/custom.css" />
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <title>@(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName)</title>
+    <meta name="keywords" content="@(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName)" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="~/Theme/102001/css/style.css" rel="stylesheet" media="all" />
+    <link rel="stylesheet" type="text/css" href="~/Theme/102001/css/style(1).css" media="screen" />
+</head>
+<body>
+
+
+    <script type="text/javascript" src="~/Theme/102001/jsAddress.js"></script>
+    <script src="~/Theme/102001/dedeajax.js"></script>
+    <script src="~/Theme/102001/dialog.js"></script>
+    <style type="text/css">
+        .close {
+            float: right;
+            cursor: default;
+            color: #fff;
+        }
+    </style>
+    <script src="~/Theme/102001/user.js"></script>
+    <!--这里是顶部会员登录区域代码开始-->
+    <div id="hoend"></div>
+    <div class="top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            尊贵的会员<strong> @(Umodel.UserName) </strong>感谢您回到本站!
+                        </div>
+                        <div class="col-md-6">
+                            <a href=""><strong>个人中心</strong></a> 或 <a href="/usercenter/Agent"><strong>报单中心</strong></a> 或 <a href="/usercenter/home/logout"><strong>退出登录</strong></a>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="col-md-6">
+
+                        <ul class="block">
+                            <li class="f_l">
+                                尊贵的会员<strong> @(Umodel.UserName) </strong>
+                                感谢您回到本站!
+                                <a href=""><strong>个人中心</strong></a>
+                                或
+                                <a href=""><strong>分销中心</strong></a>
+                                或
+
+                                <a href="/usercenter/home/logout"><strong>退出登录</strong></a>
+                            </li>
+
+                        </ul>
+                    </div>*@
+            </div>
+        </div>
+
+    </div>
+
+    <div class="blank" style="height:0px;"></div>
+
+    <div class="head">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+
+
+                    <a href="/Usercenter/home"><img class="" src="~/Theme/102001/images/20160722110520732073.png" /></a>
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="nav">
+        <div class="container">
+            <ul class="block">
+
+                <li class="navall">
+                    <a href="/Usercenter/Mail/Write" title="在线留言">在线留言</a>
+                    @*<a href="" title="服务指南">服务指南</a>*@
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <div class="blank" style="height:0px;"></div>
+    <div class="huiyuanbj">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+
+
+                    <nav class="huiyuan navbar navbar-inverse " role="navigation">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <div id="navbar" class="f_l huiyuanleft navbar-collapse collapse">
+                            <dl>
+                                <dd><a href="/usercenter/home">首页</a></dd>
+                                <dt>个人信息·———</dt>
+                                <dd><a href="/usercenter/user/add">注册账号</a></dd>
+                                <dd><a href="/usercenter/user/modify">完善资料</a></dd>
+                                <dd><a href="/usercenter/home/changepassword">修改密码</a></dd>
+                                <dt>资金管理·———</dt>
+                                <dd><a href="/usercenter/finance/applytakecash?takeCoin=2001">提现申请</a></dd>
+                                <dd><a href="/usercenter/finance/ApplyTransfer">余额转帐</a></dd>
+
+
+
+                                @if ((JN.Services.UserLoginHelper.CurrentUser().ID)>0) {
+
+                                    int id = JN.Services.UserLoginHelper.CurrentUser().ID;
+                                    if (MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(id).ParentUser == "")
+                                    {
+                                     <dd><a href="/usercenter/ActiviteCoin/index">购买激活币</a></dd>
+                                     <dd><a href="/usercenter/ActiviteCoin/TransferCoin">激活币转账</a></dd>
+                                    }
+                                    else if(MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(id).IsActivation==false)
+                                    {
+                                        <dd>
+                                            
+                                            <a href="###" data-value="@JN.Services.UserLoginHelper.CurrentUser().ID" class="bt">激活账号</a> 
+                                </dd>
+
+                                    }
+                                    else if (MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(id).ParentUser != ""&&MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(id).Child>0)
+                                    { 
+                                         <dd><a href="/usercenter/ActiviteCoin/TransferCoin">激活币转账</a></dd>
+                                         <dd><a href="###" data-value="@JN.Services.UserLoginHelper.CurrentUser().ID" class="bt">激活账号</a> </dd>
+                                    
+                                    }
+
+                                }
+                                
+
+                                <dt>资金查看·———</dt>
+                                <dd><a href="/usercenter/finance/InvertmentList">投资记录</a></dd>
+                                <dd><a href="/usercenter/finance/BonusDetail">奖金记录</a></dd>
+                                <dd><a href="/usercenter/finance/AccountDetail">钱包记录</a></dd>
+                                <dd><a href="/usercenter/finance/TakeCash">提现记录</a></dd>
+                                <dt>报单中心·———</dt>
+                                <dd><a href="/usercenter/Agent/ApplyAgent">申请中心</a></dd>
+                                <dd><a href="/usercenter/Agent">我的会员</a></dd>
+
+                            </dl>
+                        </div>
+                    </nav>
+                </div>
+
+
+                <div class="col-md-9">
+                    <div class="huiyuan">
+
+                        <div class="f_r huiyuanright">
+                            @RenderBody()
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footnav col-md-3">
+
+                    @*<dl style="border-left:none;">
+                            <dt><a href="/Usercenter/home" title="在线留言">在线留言</a></dt>
+
+                        </dl>*@
+
+
+
+                    <div class="blank" style="height:0px;"></div>
+                </div>
+                <div class="footnav col-md-3">
+
+
+
+                    @*<dl>
+                            <dt><a href="http://c.qcg0158.com/inexcn.asp?action=shfss" title="服务指南">服务指南</a></dt>
+
+                        </dl>*@
+
+
+                    <div class="blank" style="height:0px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                @*<p class="block tl">
+                        <strong>友情链接：</strong>
+                        友情链接还未添加
+                    </p>*@
+                <p class="block tc">
+
+                    @*<a href="http://c.qcg0158.com/inexcn.asp?action=shfss" title="服务指南">服务指南</a> |*@
+
+                    @* <a href="/Usercenter/home" title="在线留言">在线留言</a>*@
+                </p>
+                <p class="block tc">
+                    @*Copyright© 2014-2015 ，亨利国际*@
+                </p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="~/Theme/102001/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="~/Theme/102001/js/slide.js"></script>
+    <script type="text/javascript" src="~/Theme/102001/js/img_hc.js"></script>
+    <script src="js.js"></script>
+
+    <script type="text/javascript">
+    $(".bt").on("click", function () {
+        var id = $(this).attr("data-value");
+        bootbox.confirm('确定激活选定用户吗?', function (result) {
+            if (result) {
+                $.post('@(Url.Action("Activite","Agent"))', { id: id }, function (data) {
+                    if (data.Status == 200) {
+                        bootbox.alert(data.Message);
+                        location.reload();
+                    }
+                    else {
+                        bootbox.alert(data.Message);
+                    }
+                });
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+

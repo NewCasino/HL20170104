@@ -1,0 +1,168 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<JN.Data.User>
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<!-- PAGE CONTENT BEGINS -->
+<div class="row">
+    <div class="col-xs-12">
+        <div class="table-responsive">
+            <div id="sample-table-1_wrapper" class="dataTables_wrapper" role="grid">
+                <form class="form-search form-inline" method="get">
+                    <div class="row" style="margin-bottom:20px">
+                        <div class="col-md-5">
+                            <div class="col-xs-4 no-padding-right" style="width:130px">
+                                <select name="df" class="form-control">
+                                    <option value="activation" @(Request["df"] == "activation" ? "selected" : "")>@T("追投时间")</option>
+                                </select>
+                            </div>
+                            <div class="input-group col-sm-7 no-padding-left">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar bigger-110"></i>
+                                </span>
+                                <input class="form-control no-margin-left daterange add-ranges" type="text" name="dr" value="@Request["dr"]" />
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-xs-4 no-padding-right" style="width:130px">
+                                <select name="kf" class="form-control">
+                                    <option value="username" @(Request["kf"] == "username" ? "selected" : "")>@T("帐号编号")</option>
+                                </select>
+                            </div>
+                            <div class="input-group col-sm-8 no-padding-left">
+                                <input type="text" name="kv" value="@Request["kv"]" class="form-control search-query" placeholder="@T("请输入要查询的关键字")" />
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-purple btn-sm">
+                                        @T("查询")
+                                        <i class="icon-search icon-on-right bigger-110"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <table id="sample-table-1" class="table table-striped table-bordered table-hover no-margin-bottom">
+                    <thead>
+                        <tr>
+                            <th class="center">
+
+                            </th>
+                            <th>@T("追投帐号")</th>
+                            @*<th>@T("真实姓名")</th>
+                                <th>@T("性别")</th>
+                                <th>@T("手机号码")</th>*@
+                            <th>@T("投资类型")</th>
+                            <th>@T("分红")</th>
+                            <th>@T("金币")</th>
+                            <th>@T("现金币")</th>
+                            <th>@T("状态")</th>
+                            <th>
+                                <i class="icon-time bigger-110 hidden-480"></i>
+                                @T("创建时间")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count > 0)
+                        {
+                            for (int i = 0; i < Model.Count; i++)
+                            {
+                                <tr>
+                                    <td align="center">
+                                        @(i + 1)
+                                    </td>
+                                    <td>
+                                        @Model[i].UserName
+                                    </td>
+                                    @*<td>
+                                            @Model[i].RealName
+                                        </td>
+                                        <td>
+                                            @Model[i].Sex
+                                        </td>*@
+
+
+                                    <td>
+                                        @Model[i].Investment
+                                    </td>
+                                    <td>
+                                        @JN.BLL.bonusdetails.GetFieldValue("ISNULL(SUM(BonusMoney),0)", "BonusID=1101 and UID=" + Model[i].ID)
+                                    </td>
+                                    <td>@Model[i].SonWallet.ToString("F2")</td>
+                                    <td>
+                                        @Model[i].BonusWallet.ToString("F2")
+                                        <a href="###" class="btn btn-xs btn-danger zcxjb" data-value="@Model[i].ID">
+                                            @T("转出")
+                                        </a>
+                                    </td>
+                                    <td class="hidden-480">
+                                        @(Model[i].IsLock ? T("已冻结") : (Model[i].IsActivation ? T("已激活") : T("待激活")))
+                                    </td>
+                                    <td class="hidden-480">@Model[i].CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>
+                                        @{
+                                if (!Model[i].IsActivation)
+                                {
+                                    int sjc = JN.Common.DateTimeDiff.DateDiff_Sec(DateTime.Now, Model[i].CreateTime);
+
+                                    if (sjc > JN.Services.Tool.ConfigHelper.StrToInt(JN.BLL.sysparams.GetModel(1503).Value2) * 60)
+                                    {
+                                        @T("帐户已过期")
+                                    }
+                                    else
+                                    {
+                                        int gqday = JN.Services.Tool.ConfigHelper.StrToInt(JN.BLL.sysparams.GetModel(1503).Value2) * 60 - sjc;
+                                        @T("还有")@*@(Math.Floor(Convert.ToDouble(gqday)/Convert.ToDouble(24*60)))*@ @(gqday / 86400 + 1) @T("天不激活此帐号将自动过期")
+                                            <a href="/User/User/doSubPass/@Model[i].ID" class="btn btn-minier btn-primary">
+                                                @T("激活")
+                                            </a>
+                                    }
+                                }
+                                        }
+                                    </td>
+                                </tr>
+
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!--S 翻页页码  -->
+            @Html.NoticePager(Model.CurrentPageIndex, Model.TotalItemCount, Model.PageSize)
+            <!--E 翻页页码  -->
+            @*<div id="id-message-list-navbar" class="message-navbar align-left clearfix">
+                    <div class="message-bar">
+                        <div class="message-toolbar">
+                            <a class="btn btn-xs btn-message" href="#" id="makelock">
+                                <i class="icon-trash bigger-125"></i>
+                                <span class="bigger-110">冻结帐号</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>*@
+
+        </div><!-- /.table-responsive -->
+    </div><!-- /span -->
+</div><!-- /row -->
+<!-- PAGE CONTENT ENDS -->
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('[data-rel=tooltip]').tooltip({ container: 'body' });
+        bootbox.setDefaults({ locale: "zh_CN" });
+
+        $(".zcxjb").on("click", function () {
+            var id = $(this).attr("data-value");
+            bootbox.prompt('请输入要转出现金币的数量：', function (result) {
+                if (result)
+                    $.post('/user/finance/rollout', { id: id, number: result }, function (data) {
+                        if (data == 'ok')
+                            location.href = '/user/user/subaccount';
+                        else
+                            alert(data);
+                    });
+            });
+        });
+    })
+</script>

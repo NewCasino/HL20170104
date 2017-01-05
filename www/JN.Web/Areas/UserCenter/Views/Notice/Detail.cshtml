@@ -1,0 +1,25 @@
+﻿@model JN.Data.Notice
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+
+<!-- page specific plugin styles -->
+    <div class="row" style="background-color: #fff;">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        <h2 style="text-align:center">@Model.Title</h2>
+        <h6 style="text-align:center; color:#999">@T("发布时间")：@Model.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</h6>
+        <hr />
+        <br /><br />
+        <p>
+            @MvcHtmlString.Create(Model.Content)
+        </p>
+
+
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+<!-- page specific plugin scripts -->
+<!--[if lte IE 8]>
+  <script src="/assets/js/excanvas.min.js"></script>
+<![endif]-->

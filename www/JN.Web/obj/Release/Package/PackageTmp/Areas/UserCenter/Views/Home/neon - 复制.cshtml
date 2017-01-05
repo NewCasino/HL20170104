@@ -1,0 +1,531 @@
+﻿@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+    var userEntity = JN.Services.UserLoginHelper.CurrentUser();
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+}
+<script src="/js/mathlib-min.js"></script>
+<script src="/js/k3d-min.js"></script>
+<script src="/js/radiation.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<link href="/css/trade.css" rel="stylesheet" />
+
+    <!-- NEON-->
+   <div class="row" style="margin-top:50px">
+
+    @{
+        int i = 1;
+        foreach (JN.Data.Extensions.IndexWidget widget in ViewBag.Widgets)
+        {
+            <div class="col-sm-2 col-xs-6">
+                <div class="tile-stats tile-@(i == 1 ? "orange" : i == 4 ? "blue" : (i == 2 ? "red" : (i == 3 ? "green" : "aqua")))">
+                    <div class="icon">
+                        <i class="@widget.Icon"></i>
+                        <div class="num" data-start="0" data-end="@widget.Value" data-postfix="" data-duration="1500" data-delay="0">
+                            @widget.Value
+                            @*@if (widget.Name == "AP钱包")
+                                {
+                                    <input value="@T("转出")" class="btn " style="color:#333" onclick="location.href='@Url.Action("ApplyExchange", "Finance", new {fromCoin=2001,toCoin=2002 })'" type="button" />
+                                }*@
+                        </div>
+                    </div>
+                    @*<p>@T(widget.Description)</p>*@
+                    <div class="tile-footer">
+                        <h3>@T(widget.Name)</h3>
+                        <i class="fa fa-arrow-right"></i>
+                    </div>
+                </div>
+
+
+            </div>
+
+            i++;
+        }
+    }
+</div>
+
+    <!-- END NEON-->
+
+@{ 
+    //没领过红包
+    if (MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1106).Count() <= 0 && Umodel.IsActivation)
+    {
+
+
+<div class="container" id="container" style="background-color:transparent; width:100%">
+    <div class="RedBox" style="margin-top:50px;">
+        <div class="topcontent">
+            <h2 class="bounceInDown">LFACOIN</h2>
+            <span class="text flash"><b>给你发了一个红包</b></span>
+            <div class="avatar">
+                <div id="open"><img src="/images/user8.png" alt="" width="80" height="80" class="zoomIn"></div>
+            </div>
+            <div class="description1 flipInX"><a href="###" onclick="openhb()">点击拆红包</a></div>
+            <!--<div class="description2">查看红包</div>-->
+        </div>
+    </div>
+    <div id="openhb" style=" display:none;">
+        <div class="sweet-overlay" tabindex="-1" style="opacity: 1.01; display: block;"></div>
+        <div class="sweet-alert showSweetAlert visible" style="display: block; margin-top: -163px;">
+            <div class="icon custom" style="display:block; width:80px; height:80px; background-image:url(/images/gx.png);width:80px;height:80px"></div>
+            <h2 style="color:#f00">获得红包 <span id="hbje">0</span> AP</h2><p></p>
+            <button class="confirm" onclick="$('#openhb').hide()" tabindex="1" style="box-shadow: rgba(174, 222, 244, 0.8) 0px 0px 2px, rgba(0, 0, 0, 0.0470588) 0px 0px 0px 1px inset; background-color: rgb(174, 222, 244);">OK</button>
+        </div>
+    </div>
+    </div>
+        }
+    }
+<script>
+    function openhb(id) {
+        $.post('@(Url.Action("HongBao"))', { }, function (data) {
+            if (data != '0') {
+                $("#hbje").html(data);
+                $('#openhb').show();
+                $('.RedBox').hide()
+            }
+            else
+                alert("每人只能领取一个红包");
+        });
+    }
+</script>
+    <div class="row mt10">
+
+        @*<div class="col-sm-6 widget-container-span ui-sortable">
+            <div class="panel panel-green">
+                <div class="panel-heading">@(T("RC币图表"))</div>
+                <div class="panel-body" style="padding:10px 10px; height:300px">
+                    @{
+                        var issue = MvcCore.Unity.Get<JN.Data.Service.IStockIssueService>().Single(x => x.Status == 1);
+                        if (issue != null)
+                        {
+                            <h3>@T("RC币目前处于认购阶段")</h3>
+                            <table class="items table table-striped table-bordered table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>@T("认购名称")：</td>
+                                        <td>@issue.Title</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@T("发行总量")：</td>
+                                        <td>6000000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@T("已认购")：</td>
+                                        <td>@(Math.Floor(issue.HaveSubscribe / issue.TotalStock * 100))%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@T("认购单价")：</td>
+                                        <td>@issue.Price.ToString("F4")</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@T("最多可认购")：</td>
+                                        <td>@((issue.MaxBuy ?? 0).ToString("F4"))</td>
+                                    </tr>
+                                    <tr>
+
+                                        <td colspan="2" align="center">
+                                            <a class="button button-rounded button-large btn-red" style="width:100%" href="@(Url.Action("Subscription", "Trade"))">
+                                                <i class="icon-ok bigger-110"></i>
+                                                @T("马上认购")
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div id="chart_div" style="height:280px"></div>
+                            <script src="/js/echarts/echarts.js"></script>
+                            <script type="text/javascript">
+                                $(function () {
+
+
+                                    require.config({
+                                        paths: {
+                                            echarts: '/js/echarts'
+                                        }
+                                    });
+                                    require(['echarts',
+                                              'echarts/theme/dark',
+                                              'echarts/chart/k'],
+
+                                        function (ec, theme) {
+                                            var myChart = ec.init(document.getElementById('chart_div'), theme);
+                                            var option = {
+
+                                                grid: {
+                                                    x: 50,
+                                                    y: 20,
+                                                    x2: 20,
+                                                    y2: 60
+                                                },
+                                                tooltip: {
+                                                    trigger: 'axis',
+                                                    formatter: function (params) {
+                                                        var res = params[0].seriesName + '  ' + params[0].name;
+                                                        res += '<br/>  Open : ' + params[0].value[0] + '$  High : '
+                                                                + params[0].value[3] + '$';
+                                                        res += '<br/>  Close : ' + params[0].value[1] + '$  Low : '
+                                                                + params[0].value[2] + '$';
+                                                        return res;
+                                                    }
+                                                },
+
+                                                toolbox: {
+                                                    show: false,
+                                                    feature: {
+                                                        mark: {
+                                                            show: true
+                                                        },
+                                                        dataZoom: {
+                                                            show: true
+                                                        },
+                                                        dataView: {
+                                                            show: true,
+                                                            readOnly: false
+                                                        },
+                                                        magicType: {
+                                                            show: true,
+                                                            type: ['line', 'bar']
+                                                        },
+                                                        restore: {
+                                                            show: true
+                                                        },
+                                                        saveAsImage: {
+                                                            show: true
+                                                        }
+                                                    }
+                                                },
+                                                dataZoom: {
+                                                    show: false,
+                                                    realtime: true,
+                                                    start: 0,
+                                                    end: 100
+                                                },
+                                                xAxis: [{
+                                                    type: 'category',
+                                                    boundaryGap: true,
+                                                    axisTick: {
+                                                        onGap: false
+                                                    },
+                                                    splitLine: {
+                                                        show: false
+                                                    },
+                                                    data: []
+                                                }],
+                                                yAxis: [{
+                                                    type: 'value',
+                                                    scale: true,
+                                                    boundaryGap: [0.01, 0.01]
+                                                }],
+                                                series: [{
+                                                    name: 'XCoin',
+                                                    type: 'k',
+                                                    data: []
+                                                }]
+                                            };
+
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "/usercenter/home/getkstock",
+                                                data: "t=" + new Date(),
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    option.xAxis[0].data = data.dates;
+                                                    option.series[0].data = data.datas;
+                                                    myChart.setOption(option);
+                                                }
+                                            });
+                                        });
+                                });
+                            </script>
+                        }
+                    }
+                </div>
+            </div>
+        </div>*@
+
+
+
+        <div class="col-sm-12 widget-container-span ui-sortable">
+
+            <div class="panel panel-white">
+                <div class="panel-heading"><div class="bBB1C21">@(T("股权图表"))</div></div>
+                <div class="panel-body" style="padding:10px 10px; height:300px">
+                            <div id="container2" style="width: 100%; height: 250px; "></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    
+                    <h4 class="lighter"><i class="fa fa-star cBB1C21 mr5"></i>@T("最新公告")</h4>
+
+                    <div class="widget-toolbar no-border">
+                        <a href="#" data-action="collapse">
+                            <i class="icon-chevron-up"></i>
+                        </a>
+
+                        <a href="#" data-action="close">
+                            <i class="icon-remove"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="widget-body">
+                    <div class="widget-main no-padding no-margin">
+                        <table class="table table-bordered table-striped">
+                            @{
+                                string ggWhere = "Platform='会员平台'";
+                                var ggLst = MvcCore.Unity.Get<JN.Data.Service.INoticeService>().List(x => x.Platform == "会员平台").OrderByDescending(x => x.IsTop).ToList();
+                                //if (userEntity.IsAgent ?? false)
+                                //{
+                                //    ggWhere += " or Platform='报单中心'";
+                                //}
+                                if (ggLst.Count > 0)
+                                {
+
+                                    foreach (var notice in ggLst)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <span class="pull-right">@notice.CreateTime.ToString("yyyy-MM-dd")</span>
+                                                <a href="/UserCenter/Notice/Detail/@notice.ID">
+                                                    @notice.Title
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <tr><td>@T("暂无通告")</td></tr>
+                                }
+                            }
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <h4 class="lighter"><i class="fa fa-star cBB1C21 mr5"></i>@T("最新会员")</h4>
+
+                    <div class="widget-toolbar no-border">
+                        <a href="#" data-action="collapse">
+                            <i class="icon-chevron-up"></i>
+                        </a>
+
+                        <a href="#" data-action="close">
+                            <i class="icon-remove"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <style>
+                    ul, li, dl, ol {
+                        list-style: none;
+                    }
+
+                    .list_lh {
+                        height: 270px;
+                        overflow: hidden;
+                    }
+
+                        .list_lh li {
+                            padding: 10px;
+                        }
+
+                            .list_lh li.lieven {
+                                background: #F0F2F3;
+                            }
+
+                            .list_lh li p {
+                                height: 24px;
+                                line-height: 24px;
+                            }
+
+                                .list_lh li p a {
+                                    float: left;
+                                }
+
+                                .list_lh li p em {
+                                    width: 80px;
+                                    font: normal 12px/24px Arial;
+                                    color: #FF3300;
+                                    float: right;
+                                    display: inline-block;
+                                }
+
+                                .list_lh li p span {
+                                    color: #999;
+                                    float: right;
+                                }
+
+                                .list_lh li p a.btn_lh {
+                                    background: #28BD19;
+                                    height: 17px;
+                                    line-height: 17px;
+                                    color: #fff;
+                                    padding: 0 5px;
+                                    margin-top: 4px;
+                                    display: inline-block;
+                                    float: right;
+                                }
+
+                    .btn_lh:hover {
+                        color: #fff;
+                        text-decoration: none;
+                    }
+                </style>
+                <div class="widget-body">
+                    <div class="widget-main no-padding no-margin">
+                        <div class="list_lh">
+                            <ul style="-webkit-padding-start:0px">
+                                @{
+                                    var lst2 = MvcCore.Unity.Get<JN.Data.Service.IUserService>().List(x => x.IsActivation).OrderByDescending(x => x.ID).Take(20).ToList();
+                                    if (lst2.Count > 0)
+                                    {
+                                        foreach (var item in lst2)
+                                        {
+                                            <li>
+                                                <p><a href="###">@T("新用户")：@JN.Services.Tool.StringHelp.UserNameHid(item.UserName)</a>@*<span>@item.CreateTime.ToShortDateString()</span>*@</p>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+
+                        <script src="~/js/scroll.js"></script>
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                $('.list_lh li:even').addClass('lieven');
+
+                                $("div.list_lh").myScroll({
+                                    speed: 20, //数值越大，速度越慢
+                                    rowHeight: 68 //li的高度
+                                });
+                            })
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- /row -->
+    <!-- page specific plugin scripts -->
+    <!--[if lte IE 8]>
+      <script src="/assets/js/excanvas.min.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $('.widget-container-span').sortable({
+                connectWith: '.widget-container-span',
+                items: '> .widget-box',
+                opacity: 0.8,
+                revert: true,
+                forceHelperSize: true,
+                placeholder: 'widget-placeholder',
+                forcePlaceholderSize: true,
+                tolerance: 'pointer'
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        COIN_HEIGHT();
+        COIN_WIDTH();
+        function COIN_HEIGHT() {
+            //ajax
+            $.ajax({
+                type: "POST",
+                dataType: "JSON",
+                data: "",
+                url: "@(Url.Action("ajax_coin_info_height", "CFB"))",
+                success: function (coin_height_data) {
+                    Highcharts.setOptions({
+                        colors: ['#052963', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+                    });
+                    //chart start
+                    $('#container2').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: '@(T("股权价格趋势"))'
+                        },
+                        subtitle: {
+                            text: 'Equity Coin Quote Infomation.'
+                        },
+                        xAxis: {
+                            type: 'category',
+                            labels: {
+                                rotation: -45,
+                                style: {
+                                    fontSize: '13px',
+                                    fontFamily: 'Verdana, sans-serif'
+                                }
+                            }
+                        },
+                        yAxis: {
+                            min: 0,
+                            max: 100,
+                            title: {
+                                text: '@(T("销售量"))（%)'
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        tooltip: {
+                            pointFormat: 'Quote: <b>{point.y:.1f} %</b>'
+                        },
+                        series: [{
+                            name: 'Quote',
+                            data: coin_height_data,
+                            dataLabels: {
+                                enabled: true,
+                                rotation: -90,
+                                color: '#FFFFFF',
+                                align: 'right',
+                                format: '{point.y:.1f}', // one decimal
+                                y: 10, // 10 pixels down from the top
+                                style: {
+                                    fontSize: '13px',
+                                    fontFamily: 'Verdana, sans-serif'
+                                }
+                            }
+                        }]
+                    });
+                    //chart end
+                },
+                error: function () {
+                    //alert("ERROR!");
+                }
+            });
+
+        }
+    </script>
+    <script src="/js/highcharts.js"></script>
+    <script src="/js/modules/exporting.js"></script>

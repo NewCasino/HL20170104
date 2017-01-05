@@ -1,0 +1,354 @@
+﻿@{
+    string controller = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+    string action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords" content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>@T(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName) | @T(ViewBag.Title)</title>
+
+    <!--common-->
+    <link href="/Theme/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="/theme/adminex/css/style.css" rel="stylesheet">
+    <link href="/theme/adminex/css/style-responsive.css" rel="stylesheet">
+
+    <script src="/theme/adminex/js/jquery-1.10.2.min.js"></script>
+    <script src="/theme/adminex/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="/theme/adminex/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/theme/adminex/js/bootstrap.min.js"></script>
+    <script src="/theme/adminex/js/modernizr.min.js"></script>
+    <script src="/theme/adminex/js/jquery.nicescroll.js"></script>
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/theme/adminex/js/html5shiv.js"></script>
+    <script src="/theme/adminex/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="sticky-header">
+
+    <section>
+        <!-- left side start-->
+        <div class="left-side sticky-left-side">
+
+            <!--logo and iconic logo start-->
+            <div class="logo">
+                @*<a href="#"><img src="/theme/adminex/images/logo.png" alt=""></a>*@
+                <h3 style="color:#ff6a00; text-align: center; font-family: 微软雅黑">@T(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName)</h3>
+            </div>
+            <br />
+            <div class="logo-icon text-center">
+                <a href="index.html"><img src="/theme/adminex/images/logo_icon.png" alt=""></a>
+            </div>
+            <!--logo and iconic logo end-->
+
+            <div class="left-side-inner">
+
+                <!-- visible to small devices only -->
+                <div class="visible-xs hidden-sm hidden-md hidden-lg">
+                    <div class="media logged-user">
+                        <img alt="" src="/theme/adminex/images/photos/user-avatar.png" class="media-object">
+                        <div class="media-body">
+                            <h4><a href="#">John Doe</a></h4>
+                            <span>"Hello There..."</span>
+                        </div>
+                    </div>
+
+                    <h5 class="left-nav-title">Account Information</h5>
+                    <ul class="nav nav-pills nav-stacked custom-nav">
+                        <li><a href="#"><i class="fa fa-user"></i> <span>Profile</span></a></li>
+                        <li><a href="#"><i class="fa fa-cog"></i> <span>Settings</span></a></li>
+                        <li><a href="#"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a></li>
+                    </ul>
+                </div>
+
+                <!--sidebar nav start-->
+                <ul class="nav nav-pills nav-stacked custom-nav">
+                    @{
+                        List<JN.Entity.TNavigation> depth1 = JN.BLL.navigations.GetModelList("ParentID=0 and IsShow=1 order by sort");
+    foreach (JN.Entity.TNavigation navi1 in depth1)
+    {
+        <li class="@(navi1.Child>0 ? "menu-list" : "") @((Request.Url.ToString().ToLower().Contains(navi1.Url.ToLower())) ? "active" : "")">
+            <a href="@(navi1.Child > 0 ? "#" : navi1.Url)">
+                <i class="fa @(navi1.Icon)"></i>
+                <span>@T(navi1.Title)</span>
+            </a>
+            @if (navi1.Child > 0)
+            {
+                <ul class="sub-menu-list">
+                    @{
+                List<JN.Entity.TNavigation> depth2 = JN.BLL.navigations.GetModelList("ParentID=" + navi1.ID + " and IsShow=1 order by sort");
+                foreach (JN.Entity.TNavigation navi2 in depth2)
+                {
+                    <li class="@((Request.Url.ToString().ToLower().Contains(navi2.Url.ToLower())) ? "active" : "")"><a href="@navi2.Url"><span>@T(navi2.Title)</span></a></li>
+                }
+}
+                </ul>
+            }
+        </li>
+    }
+}
+
+                </ul>
+                <!--sidebar nav end-->
+
+            </div>
+        </div>
+        <!-- left side end-->
+        <!-- main content start-->
+        <div class="main-content">
+
+            <!-- header section start-->
+            <div class="header-section">
+
+                <!--toggle button start-->
+                <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+                <!--toggle button end-->
+                <!--search start-->
+                <form class="searchform" action="index.html" method="post">
+                    <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
+                </form>
+                <!--search end-->
+                <!--notification menu start -->
+                <div class="menu-right">
+                    <ul class="notification-menu">
+@if (JN.Services.Tool.ConfigHelper.GetConfigBool("MultiLanguage"))
+                                {
+                        <li>
+                            <a href="#" class="btn btn-default dropdown-toggle info-number" data-toggle="dropdown">
+                                <i class="fa fa-tasks"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-head pull-right">
+                                <h5 class="title">@T("切换其它语言版本")</h5>
+                                <ul class="dropdown-list user-list">
+                                    @{
+                                    IList<JN.Entity.TSysParam> langlist = JN.BLL.sysparams.GetModelList("PID=4000 and IsUse=1 order by sort");
+    if (langlist.Any() && langlist.Count > 0)
+    {
+        foreach (JN.Entity.TSysParam param in langlist)
+        {
+            <li class="new">
+                <a href="?lang=@param.Value2">
+                    <img src="/Language/@(param.Value2).png">
+                    <span>@param.Value</span>
+                </a>
+            </li>
+        }
+    }
+}
+
+
+                                </ul>
+                            </div>
+                        </li>
+}
+@{
+    IList<JN.Entity.TMessage> msglist = JN.BLL.messages.GetModelList("UID=" + JN.BLL.users.IsLogin().ID + " and IsRead=0 and ToUID=" + JN.BLL.users.IsLogin().ID);
+    if (msglist.Any() && msglist.Count > 0)
+    {
+                        <li>
+                            <a href="#" class="btn btn-default dropdown-toggle info-number" data-toggle="dropdown">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="badge">@msglist.Count</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-head pull-right">
+                                <h5 class="title">@msglist.Count @T("条留言信息") </h5>
+                                <ul class="dropdown-list normal-list">
+@{
+                int i = 0;
+                foreach (JN.Entity.TMessage infor in msglist)
+                {
+                    if (i > 4)
+                    {
+                        break;
+                    }
+                                    <li class="@(i==0? "new" : "")">
+                                        <a href="/user/mail/inbox">
+                                            <span class="thumb"><img src="/theme/adminex/images/photos/user1.png" alt="@infor.FormUserName" /></span>
+                                            <span class="desc">
+                                                <span class="name">@infor.FormUserName 
+                                                @if (i==0)
+                                                { 
+                                                <span class="badge badge-success">new</span>
+                                                }
+                                                </span>
+                                                <span class="msg">@MvcHtmlString.Create(JN.Common.Utils.CutString(infor.Content, 0, 200))</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                        i++;
+                 }
+                 }
+             
+                                    <li class="new"><a href="/user/mail/inbox">@T("查看所有留言")</a></li>
+                                </ul>
+                            </div>
+                        </li>
+    }
+}
+@{
+    int newuser = JN.BLL.users.GetRecordCount("IsActivation=0 and IsSubAccount=0 and RefereeID=" + JN.BLL.users.IsLogin().ID);
+    int newsubuser = JN.BLL.users.GetRecordCount("IsActivation=0 and IsSubAccount=1 and RefereeID=" + JN.BLL.users.IsLogin().ID);
+    int total = newuser + newsubuser;
+
+        if (total > 0)
+        {
+                        <li>
+                            <a href="#" class="btn btn-default dropdown-toggle info-number" data-toggle="dropdown">
+                                <i class="fa fa-bell-o"></i>
+                                <span class="badge">@total</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-head pull-right">
+                                <h5 class="title">@total @T("条未读信息")</h5>
+                                <ul class="dropdown-list normal-list">
+@if (newuser > 0)
+                {
+                                    <li class="new">
+                                        <a href="/user/user/unactivation">
+                                            <span class="label label-danger"><i class="fa fa-bolt"></i></span>
+                                            <span class="name">@T("需要激活的的新会员")</span>
+                                            <em class="small">+@newuser</em>
+                                        </a>
+                                    </li>
+}
+@if (newsubuser > 0)
+{
+    <li class="new">
+        <a href="/user/user/subaccount">
+            <span class="label label-danger"><i class="fa fa-bolt"></i></span>
+            <span class="name">@T("需要激活的的子帐号")</span>
+            <em class="small">+@newsubuser</em>
+        </a>
+    </li>
+}
+@{
+                //系统参数
+                float PARAM_AGENT_JTGS = JN.Services.Tool.ConfigHelper.StrToInt(JN.BLL.sysparams.GetModel(1801).Value, 0); //成为报单中心所需的直推个数
+                    if (JN.BLL.users.GetRecordCount("RefereeID=" + JN.BLL.users.IsLogin().ID + " and IsActivation=1") >= PARAM_AGENT_JTGS)
+                    {
+                        if (!JN.BLL.users.IsLogin().IsAgent && String.IsNullOrEmpty(JN.BLL.users.IsLogin().AgentName))
+                        {
+                                    <li class="new">
+                                        <a href="/user/agent/applyagent">
+                                            <span class="label label-danger"><i class="fa fa-bolt"></i></span>
+                                            <span class="name">@T("您可以申请报单中心") </span>
+                                        </a>
+                                    </li>
+                         }
+                    }
+                }
+                                    @*<li class="new"><a href="">See All Notifications</a></li>*@
+                                </ul>
+                            </div>
+                        </li>
+}
+}
+                        <li>
+                            <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <img src="/theme/adminex/images/photos/user-avatar.png" alt="@JN.BLL.users.IsLogin().UserName" />
+                                @JN.BLL.users.IsLogin().UserName
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+                                <li><a href="/user/user/myinfo"><i class="fa fa-user"></i>  @T("个人资料")</a></li>
+                                <li><a href="/user/home/changepassword"><i class="fa fa-cog"></i>  @T("修改密码")</a></li>
+                                <li><a href="/user/home/logout"><i class="fa fa-sign-out"></i> @T("退出系统")</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <!--notification menu end -->
+
+            </div>
+            <!-- header section end-->
+            <!-- page heading start-->
+            @{
+                string path = "";
+                switch (controller)
+                {
+                    case "user":
+                        path = "会员管理";
+                        break;
+                    case "agent":
+                        path = "报单中心";
+                        break;
+                    case "finance":
+                        path = "财务管理";
+                        break;
+                    case "home":
+                        path = "";
+                        break;
+                    case "mail":
+                        path = "邮件中心";
+                        break;
+                    case "market":
+                        path = "交易市场";
+                        break;
+                    case "notice":
+                        path = "会员公告";
+                        break;
+                    default: break;
+                }
+            }
+            
+            <div class="page-heading">
+                @*<h3>
+                    @T(ViewBag.Title)
+                </h3>*@
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="/user/home">@T("首页")</a>
+                    </li>
+                    @if (!string.IsNullOrEmpty(path))
+                    { 
+                    <li>
+                        <a href="#">@T(path)</a>
+                    </li>
+                    }
+                    <li class="active">@T(ViewBag.Title) </li>
+                </ul>
+            </div>
+            <!-- page heading end-->
+            <!--body wrapper start-->
+            <div class="wrapper">
+@RenderBody()
+            </div>
+            <!--body wrapper end-->
+            <!--footer section start-->
+            <footer>
+                2014 &copy; AdminEx by ThemeBucket
+            </footer>
+            <!--footer section end-->
+
+
+        </div>
+        <!-- main content end-->
+    </section>
+
+    <!-- Placed js at the end of the document so the pages load faster -->
+
+
+    <!--common scripts for all pages-->
+    <script src="/theme/adminex/js/scripts.js"></script>
+
+    <link rel="stylesheet" href="/theme/neon/assets/js/daterangepicker/daterangepicker-bs3.css">
+    <script src="/theme/neon/assets/js/daterangepicker/moment.min.js"></script>
+    <script src="/theme/neon/assets/js/daterangepicker/daterangepicker.js"></script>
+    <script src="/theme/neon/assets/js/bootstrap-datepicker.js"></script>
+    <script src="/theme/neon/assets/js/bootstrap-timepicker.min.js"></script>
+    <script src="/assets/js/bootbox.min.js"></script>
+    <script src="/Scripts/jn.js"></script>
+
+</body>
+</html>

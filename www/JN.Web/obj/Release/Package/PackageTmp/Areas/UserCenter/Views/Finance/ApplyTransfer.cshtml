@@ -1,0 +1,169 @@
+﻿@model JN.Data.User
+@{
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        <div class="tab-content" style="margin-top:20px">
+            <div class="table-responsive">
+                @using (Ajax.BeginForm("ApplyTransfer", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "saveForm", @class = "form-horizontal" }))
+                {
+                       <input name="CheckValue" type="hidden" value="@ViewBag.CheckForm" />
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="mainwallet">@T("帐户余额"):</label>
+                        <div class="col-xs-12 col-sm-2">
+                            <div class="clearfix">
+                                <input type="text" name="mainwallet" class="form-control" value="@Umodel.Wallet2001.ToString("F2")" readonly="readonly" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="recuser">@T("接收会员"):</label>
+
+                        <div class="col-xs-12 col-sm-5">
+                            <div class="input-group">
+                                <input type="text" name="recuser" class="form-control" style="width:135px" value="" />&nbsp;<button type="button" class="btn btn-primary btn-sm ckuser">@T("验证")</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="poundage">@T("转帐手续费率"):</label>
+
+                            <div class="col-xs-12 col-sm-2">
+
+                                <input type="text" id="poundage" class="form-control" value="@ViewBag.Poundage" readonly="readonly" />
+                            </div>
+                        </div>*@
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="drawmoney">@T("转帐金额"):</label>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="input-group">
+                                <input type="text" id="takenumber" class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" style="width:50px" value="0" /><input type="text" style="width: 100px" readonly class="form-control" value="×@(ViewBag.Beisu) = " /><input type="text" name="transfermoney" style="width:100px" class="form-control" value="0" readonly="readonly" />
+                                <input type="hidden" id="takemultiple" value="@ViewBag.Beisu">
+                                <input type="hidden" id="transCoin" value="@ViewBag.transCoin">
+                            </div>
+                            <span style="color:#f00; line-height:25px">*@T("金额必须为" + ViewBag.Beisu + "的倍数")</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="actualdrawmoney">@T("二级密码"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="input-group">
+                                <input type="password" name="password2" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("备注"):</label>
+
+                        <div class="col-xs-12 col-sm-5">
+                            <textarea name="remark" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="hr hr-dotted"></div>
+
+                    <div class="clearfix form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button class="btn btn-info" type="submit" style="width:200px; line-height:35px; font-size:18px">
+                                <i class="icon-ok bigger-110"></i>
+                                @T("立刻转帐")
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div><!-- /.table-responsive -->
+        </div><!-- /span -->
+        <hr />
+        <table id="sample-table-1" class="table table-striped table-bordered table-hover no-margin-bottom">
+            <thead>
+                <tr>
+                    <th>@T("转帐时间")</th>
+                    <th>@T("转出/转进")</th>
+                    <th>@T("转帐会员")</th>
+                    <th>@T("接收会员")</th>
+                    <th>@T("转帐金额")</th>
+                    @*<th>@T("实转金额")</th>*@
+                    <th>@T("备注")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var trans = MvcCore.Unity.Get<JN.Data.Service.ITransferService>().List(x => x.UID == Umodel.ID || x.ToUID == Umodel.ID).Take(50).OrderByDescending(x => x.ID).ToList();
+                    foreach (var item in trans)
+                    {
+                        <tr>
+                            <td>
+                                @item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                            </td>
+                            <td>
+                                @(item.UID == Umodel.ID ? "转出" : "转进")
+                            </td>
+                            <td>
+                                @item.UserName
+                            </td>
+                            <td>
+                                @item.ToUserName
+                            </td>
+                            <td>
+                                @item.TransferMoney.ToString("F2")
+                            </td>
+                            @*<td>
+                                    @Model[i].ActualTransferMoney.ToString("F2")
+                                </td>*@
+                            <td>
+                                @item.Remark
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <!-- // Pagination END -->
+    </div><!-- /.col -->
+</div>
+<!-- page specific plugin scripts -->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript">
+    function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@(T("转帐成功，即将为您跳转页面"))!");
+            location.href = "@(Url.Action("ApplyTransfer"))";
+        } else {
+            alert("@(T("转帐失败"))：" + data.Message);
+        }
+    }
+    jQuery(function ($) {
+        $("#takenumber").on('keyup', function () {
+            $("input[name='transfermoney']").val(parseInt($("#takenumber").val()) * parseInt($("#takemultiple").val()));
+            //$("input[name='actualtransfermoney']").val(parseFloat($("#takenumber").val()) * parseFloat($("#takemultiple").val()) * (1 - parseFloat($("#poundage").val())));
+        });
+
+        $(".ckuser").on("click", function () {
+            var username = $("input[name='recuser']").val();
+            var gourl = "/UserCenter/User/CheckUserInfo";
+            $.post(gourl, { username: username }, function (response) {
+                if (response.status == "ok") {
+                    alert(response.refMsg);
+                } else {
+                    alert(response.refMsg);
+                }
+            });
+        });
+
+    });
+</script>

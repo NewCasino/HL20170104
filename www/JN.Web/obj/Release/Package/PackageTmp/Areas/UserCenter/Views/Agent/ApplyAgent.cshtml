@@ -1,0 +1,74 @@
+﻿@model JN.Data.User
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<!-- page specific plugin styles -->
+
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        @using (Ajax.BeginForm("ApplyAgent", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "saveForm", @class = "form-horizontal" }))
+        {
+            @*<div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@T("申请会员编号"):</label>
+
+                <div class="col-xs-12 col-sm-2">
+                    <div class="clearfix">
+                        <input type="text" name="username" class="form-control" value="" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("新报单中心编号"):</label>
+
+                <div class="col-xs-12 col-sm-2">
+
+                    <input type="text" name="agentname" class="form-control" value="@ViewBag.CurrentUser" />
+                </div>
+            </div>*@
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("申请备注"):</label>
+
+                <div class="col-xs-12 col-sm-5">
+                    <textarea name="agentremark" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="hr hr-dotted"></div>
+
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="icon-ok bigger-110"></i>
+                        @T("保存")
+                    </button>
+
+                    &nbsp; &nbsp; &nbsp;
+                    <button class="btn" type="reset">
+                        <i class="icon-undo bigger-110"></i>
+                        @T("重置")
+                    </button>
+                </div>
+            </div>
+        }
+
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+<!-- page specific plugin scripts -->
+<!--[if lte IE 8]>
+  <script src="/assets/js/excanvas.min.js"></script>
+<![endif]-->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript">
+    function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@T("您已成功申请报单中心，请耐心等待公司审核！")");
+            location.href = "@(Url.Action("applyagent"))";
+        } else {
+            alert("@T("保存失败！错误信息：")" + data.Message);
+        }
+    }
+</script>

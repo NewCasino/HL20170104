@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "抢购股权";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    var Umodel = JN.Services.UserLoginHelper.CurrentUser();
+    if (Umodel == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<link href="~/Theme/styles.css" rel="stylesheet" />
+<div class="row">
+    <div class="over-auto">
+        @using (Ajax.BeginForm("Subscription", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "frmReg", @class = "form-horizontal" }))
+{
+    <div class="box col-xs-6 pull-left">
+        @{
+    var issue = MvcCore.Unity.Get<JN.Data.Service.ICFBIssueService>().Single(x => x.Status == 1);
+    if (issue != null)
+    {
+        //该会员首次充值金额
+        //decimal rgsl = 0;
+        //decimal rgje = 0;
+        //List<JN.Entity.TRemittance> remits = JN.BLL.remittances.GetModelList("UID=" + JN.BLL.users.IsLogin().ID + " and IsPassed=1");
+        //if (remits.Count > 0)
+        //{
+        //    rgje = remits.FirstOrDefault().RechargeAmount * (decimal)JN.Common.TypeConverter.StrToFloat(JN.BLL.sysparams.GetModel(1503).Value);
+        //}
+        //if (rgje > 0)
+        //{
+        //    rgsl = rgje / issue.Price;
+        //}
+
+
+        <div class="control-group">
+            <label class="control-label">@T("抢购名称")</label>
+            <div class="controls"><strong id="max">@issue.Title</strong></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">@T("可用余额")</label>
+            <div class="controls">@Umodel.Wallet2002.ToString("F2")</div>
+        </div>
+            <div class="control-group "><label class="control-label required">@T("抢购价格") <span class="required">*</span></label><div class="controls"><input id="rgprice" readonly value="@issue.Price.ToString("F3")" name="rgprice" type="text" /></div></div>
+            <div class="control-group "><label class="control-label required">@T("抢购数量") <span class="required">*</span></label><div class="controls"><input id="rgamount" class="gray" value="0" name="rgamount" type="text" /></div></div>    <div class="control-group">
+                <label class="control-label">@T("抢购总价")</label>
+                <div class="controls">$<strong class="red" id="sumprice">0</strong></div>
+            </div>
+            <div class="control-group "><label class="control-label">@T("二级密码")</label><div class="controls"><input id="tradePassword" class="gray w140" value="" name="tradePassword" type="password" /></div></div>
+            <!-- 抢购限制 -->
+            @*<div class="control-group">
+                    <label class="control-label">抢购名额</label>
+                    <div class="controls">今日还剩余 <strong class="red" id="sumprice">0</strong> 次</div>
+                </div>*@
+            <div class="buyBtn">
+                    <button id="btn-submit" class="btn btn-success" type="submit" name="yt0">@T("抢购")</button>
+
+            </div>
+        } 
+else
+{
+        <div style="color:#f00; line-height:50;">@T("抢购通道已关闭，请前往交易中心购买")</div>
+        }
+        }
+    </div>
+        }
+        <style>
+            .Transaction td {
+                height: 18px;
+                line-height: 22px;
+            }
+        </style>
+        
+
+        
+    </div>
+
+    <div class="clear"></div>
+    <div class="mt20"></div>
+
+
+    <div class="box">
+        <div class="TitleBox">
+            <h3 class="PlateTitle">@T("历史抢购记录")</h3>
+        </div>
+        <div class="my-grid" id="sublist-grid">
+            <table class="items table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th id="sublist-grid_c0">@T("创建时间")</th>
+                        <th id="sublist-grid_c1">@T("上次解冻时间")</th>
+                        <th id="sublist-grid_c2">@T("认购名称")</th>
+                        <th id="sublist-grid_c3">@T("认购数量")</th>
+                        <th id="sublist-grid_c4">@T("认购总价")</th>
+                        <th id="sublist-grid_c5">@T("未解冻数量")</th>
+                        <th id="sublist-grid_c5">@T("解冻次数")</th>
+                        <th id="sublist-grid_c6">@T("状态")</th>
+                        <th id="sublist-grid_c6">@T("操作")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var subscribes = MvcCore.Unity.Get<JN.Data.Service.ICFBSubscribeService>().List(x => x.UID == Umodel.ID).Take(50).OrderByDescending(x => x.ID).ToList();
+                        if (subscribes.Count > 0)
+                        {
+                            foreach (var item in subscribes)
+                            {
+                                int jdjgfz = jdjgfz = cacheSysParam.SingleAndInit(x => x.ID == 2305).Value2.ToInt();
+                                <tr class="odd">
+                                    <td>@item.CreateTime.ToShortDateString()</td>
+                                    <td>@item.LastUsedTime</td>
+                                    <td>@item.Title</td>
+                                    <td>@(item.SubscribeNumber.ToString("F2"))</td>
+                                    <td>￥@(item.TotalAmount.ToString("F2"))</td>
+                                    <td>@((item.SubscribeNumber - item.CanBeUsed ?? 0).ToString("F2"))</td>
+                                    <td>@(item.UsedTimes) 次</td>
+                                    <td>@typeof(JN.Data.Enum.SubscribeStatus).GetEnumDesc(item.Status)</td>
+                                    @if (item.Status <= (int)JN.Data.Enum.SubscribeStatus.PartOfUsed)
+                                    {
+                                        if ((item.LastUsedTime ?? DateTime.Now.AddMinutes(0 - jdjgfz)).AddMinutes(jdjgfz) <= DateTime.Now)
+                                        {
+                                            <td><a class="btn btn-success btn-mini" href="###" onclick="thawstock(@item.ID)">马上解冻</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td><a class="btn btn-danger btn-mini">剩余:@(JN.Services.Tool.DateTimeDiff.DateDiff_full((item.LastUsedTime ?? DateTime.Now.AddMinutes(0 - jdjgfz)).AddMinutes(jdjgfz), DateTime.Now))</a></td>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt20"></div>
+</div><!-- content -->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script>
+    jQuery(function ($) {
+        $("#rgamount").on('keyup', function () {
+            $("#sumprice").html(parseFloat($("#rgprice").val()) * parseFloat($("#rgamount").val()));
+        });
+    });
+    function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@(T("抢购成功，即将为您跳转页面!"))");
+            location.href = "@(Url.Action("Subscription"))";
+        } else {
+            alert("@(T("抢购失败"))：" + data.Message);
+        }
+    }
+    function thawstock(id) {
+        $.post('@(Url.Action("thawstock"))', { id: id }, function (data) {
+            if (data == 'ok') {
+                alert("@(T("恭喜您，解冻成功!"))");
+                location.href = "@(Url.Action("Subscription"))";
+            }
+            else
+                alert(data);
+        });
+    }
+</script>
+

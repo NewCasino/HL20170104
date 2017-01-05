@@ -1,0 +1,34 @@
+﻿    @{
+            var Umodel = JN.Services.UserLoginHelper.CurrentUser();
+            if (Umodel == null)
+            {
+                Page.RegisterStartupScript("lg", "<script>window.open('/usercenter/login','_top');<script>");
+                return;
+            }
+        var lst = MvcCore.Unity.Get<JN.Data.Service.IStockEntrustsTradeService>().List(x => x.UID == Umodel.ID && (x.Status == (int)JN.Data.Enum.TTCStatus.Entrusts || x.Status == (int)JN.Data.Enum.TTCStatus.PartOfTheDeal)).Take(20).OrderByDescending(x => x.ID).ToList();
+        if (lst.Count > 0)
+        {
+            foreach (var item in lst)
+            {
+                 <tr>
+                <td>
+                    @item.CreateTime
+                </td>
+                     <td class="@(item.Direction == 1 ? "sell" : "buy")">@T(typeof(JN.Data.Enum.TradeDirection).GetEnumDesc(item.Direction))</td>
+                <td>@item.Price.ToString("F4")</td>
+                <td>@(item.Quantity.ToString("F4"))</td>
+                     <td class="@(item.Direction == 1 ? "sell" : "buy") @(item.Status == -1 ? "cancelled" : "")">@typeof(JN.Data.Enum.TTCStatus).GetEnumDesc(item.Status)</td>
+                <td>
+                    @if (item.Status >= 0 && item.Status <= 1)
+                    {
+                        <a title="@T("撤消委托")" href="###" onclick="canceltrade(@item.ID)" style="color: #436EEE; border-bottom: 1px solid #436EEE; padding-bottom: 2px">@T("撤消")</a>
+                    }
+                </td>
+            </tr>
+            }
+        }
+        else
+        {
+               <tr><td colspan="6" style="text-align:center; color:#666">@T("暂无记录")</td></tr>
+        }
+               }

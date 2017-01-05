@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "今朝商联币回购";
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<div class="row-fluid">
+        @Html.Partial("_PartialLeft")
+    <div class="span span9 pull-right">
+        <div id="content">
+
+            <div class="box">
+                <div class="TitleBox">
+                    <h3 class="PlateTitle">
+                        今朝商联币回购
+                        <a title="回购须知" data-content="回购只能在发行结束或者关闭后才能进行" rel="popover" class="mt6 pull-right btn btn-success btn-mini">回购须知</a>
+                    </h3>
+                </div>
+
+
+                            <div class="over-auto">
+                                @using (Ajax.BeginForm("Sublist", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "frmReg", @class = "form-horizontal" }))
+                                {
+                                    <div class="span12 pull-left">
+
+                                        @{
+                                    JN.Entity.TBonusDetail bonus = JN.BLL.bonusdetails.GetModel("id=" + Request["bid"]);
+                                    if (bonus != null)
+                                    {
+                                        JN.Entity.TStockIssue issue = JN.BLL.stockissues.GetModel("Status=1 and Period=" + bonus.Period);
+                                        if (issue != null)
+                                        { 
+                                        
+                                        <div class="control-group">
+                                            <label class="control-label">回购期数</label>
+                                            <div class="controls"><strong id="max">@issue.Title</strong></div>
+                                        </div>
+                                            <div class="control-group "><label class="control-label required">回购价格 <span class="required">*</span></label><div class="controls"><input id="rgprice" readonly value="@issue.Price.ToString("F2")" onkeyup="" name="rgprice" type="text" /></div></div>
+                                            <div class="control-group "><label class="control-label required">回购数量 <span class="required">*</span></label><div class="controls"><input id="rgamount" class="gray"  value="@(bonus.BonusMoneyCFBA.ToString("F0"))" name="rgamount" type="text" /></div></div>    <div class="control-group">
+                                                <label class="control-label">返还金额</label>
+                                                <div class="controls"><strong class="red" id="sumprice">$@((issue.Price * bonus.BonusMoneyCFBA).ToString("F0"))</strong></div>
+                                            </div>
+                                            <div class="control-group "><label class="control-label">交易密码</label><div class="controls"><input id="tradePassword" class="gray w140" value="" name="tradePassword" type="password" /></div></div>
+            <!-- 抢购限制 -->
+                                            @*<div class="control-group">
+                                        <label class="control-label">抢购名额</label>
+                                        <div class="controls">今日还剩余 <strong class="red" id="sumprice">0</strong> 次</div>
+                                    </div>*@
+    <input type="hidden" name="bonusid" value="@bonus.ID" />
+                                            <div class="buyBtn">
+                                                    <button id="btn-submit" class="btn btn-success" type="submit" name="yt0">抢购</button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                             <p class="fee">回购只能在当期抢购关闭前能进行。</p>
+                                        }
+                                    }
+                                        }
+                                    </div>
+                                }
+                                <style>
+                                    .Transaction td {
+                                        height: 18px;
+                                        line-height: 22px;
+                                    }
+                                </style>
+                                
+
+                                
+                            </div>
+
+
+
+
+
+                
+
+                @*<div class="my-grid" id="sublist-grid">
+                    <table class="items table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr>
+                                <th id="sublist-grid_c0">创建时间</th>
+                                <th id="sublist-grid_c1">上次解冻时间</th>
+                                <th id="sublist-grid_c2">抢购名称</th>
+                                <th id="sublist-grid_c3">抢购数量</th>
+                                <th id="sublist-grid_c4">抢购总价</th>
+                                <th id="sublist-grid_c3">剩余数量</th>
+                                <th id="sublist-grid_c5">状态</th>
+                                <th id="sublist-grid_c6">解冻剩余</th>
+                                <th id="sublist-grid_c7">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                IList<JN.Entity.TStockSubscribe> sites = JN.BLL.stocksubscribes.GetModelList("1=1 and UID=" + JN.BLL.users.IsLogin().ID);
+                                if (sites.Count > 0)
+                                {
+                                    foreach (var item in sites)
+                                    {
+                                        int jdjgfz = 0;
+                                        if (item.ThawType == 0)
+                                        {
+                                            jdjgfz = JN.Common.TypeConverter.StrToInt(JN.BLL.sysparams.GetModel(1001).Value2);
+                                        }
+                                        else
+                                        {
+                                            jdjgfz = JN.Common.TypeConverter.StrToInt(JN.BLL.sysparams.GetModel(1002).Value2);
+                                        }
+                                        <tr class="odd">
+                                            <td>@item.CreateTime.ToShortDateString()</td>
+                                            <td>@item.LastUsedTime</td>
+                                            <td>@item.Title</td>
+                                            <td>@(item.SubscribeNumber.ToString("F2"))</td>
+                                            <td>$@((item.Price * item.SubscribeNumber).ToString("F2"))</td>
+                                            <td>@((item.SubscribeNumber - item.CanBeUsed ?? 0).ToString("F2"))</td>
+                                            <td>@JN.Common.EnumHelp.GetDescription(typeof(JN.Entity.Enum.SubscribeStatus), item.Status)</td>
+                                            <td>@(JN.Common.DateTimeDiff.DateDiff_full((item.LastUsedTime ?? DateTime.Now.AddMinutes(0 - jdjgfz)).AddMinutes(jdjgfz), DateTime.Now))</td>
+                                            <td><a title="解冻进度" class="btn btn-success btn-mini">已解冻 @(item.UsedTimes) 次</a></td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>*@
+            </div>
+        </div><!-- content -->
+    </div>
+
+</div>
+
+
+
+
+<script>
+    function afterPost(data) {
+
+        if (data.result == "ok") {
+            tbox("恭喜您，回购成功！", data.goUrl);
+            //tbox(data.refMsg, data.goUrl);
+            return;
+        } else {
+            mbox(data.refMsg);
+            return false;
+        }
+
+    }
+
+
+</script>

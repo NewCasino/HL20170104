@@ -1,0 +1,46 @@
+﻿@{
+    var sysEntity = MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1);
+    Layout = "~/Areas/AdminCenter/Views/Shared/_Layout.cshtml";
+}
+<!-- Content -->
+<div id="content">
+    <!-- Breadcrumb -->
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")" class="glyphicons home"><i></i> 首页</a></li>
+        <li class="divider"></li>
+        <li>@ViewBag.Title</li>
+    </ul>
+    <div class="separator bottom"></div>
+    <!-- // Breadcrumb END -->
+    <div class="innerLR">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+                <div class="control-group">
+            <label class="control-label"></label>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="mainwallet"></label>
+
+            <div class="controls">
+                @{ 
+                    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.ID < 4000).ToList();
+                    int PARAM_THAWENDHOUR = cacheSysParam.SingleAndInit(x => x.ID == 2405).Value3.ToInt(); //强制解冻 15天
+
+                    var sublist = MvcCore.Unity.Get<JN.Data.Service.ICFBSubscribeService>().List(x => (x.Status <= (int)JN.Data.Enum.SubscribeStatus.PartOfUsed && System.Data.Entity.SqlServer.SqlFunctions.DateDiff("minute", x.CreateTime, DateTime.Now) > PARAM_THAWENDHOUR)).ToList();
+                }
+                    <span style="font-size:20px; color:#009900">当前待解冻股权认购记录：@(sublist.Count())，总量：@(sublist.Count> 0 ? sublist.Sum(x => x.SubscribeNumber) : 0)</span><br /><br />
+                    <a class="btn btn-primary" href="@Url.Action("doThawStock", new { commandtype = "close"})" >集中解冻到期股权</a>
+
+            </div>
+        </div>
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+    <!-- page specific plugin scripts -->
+    <!--[if lte IE 8]>
+      <script src="/assets/js/excanvas.min.js"></script>
+    <![endif]-->
+
+</div>
+@section scripts{
+}

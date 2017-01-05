@@ -1,0 +1,210 @@
+﻿@{
+    ViewBag.Title = "FC币行情图表";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    var Umodel = JN.Services.UserLoginHelper.CurrentUser();
+    if (Umodel == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+
+}
+
+    <script src="/js/jquery-1.11.2.min.js"></script>
+    <script src="/js/highstock.js"></script>
+    <script src="/js/chartExt.js"></script>
+<script>
+	var jlang = "en";
+</script>
+
+<script src="/js/zh_CN.js"></script>
+<script>
+	jlang = "zh-cn";
+</script>
+
+    <title>@T("RiseCoin行情图表")</title>
+
+    <div style="margin:0;padding:0">
+        <!--头部-->
+        <div id="report" style="min-height:25px;padding-top:5px;background-color:#000;color:#00FFFF;padding-left:10px;font-size:12px">		</div>
+        <!--K线内容-->
+        <div style="background-color:#000;width:100%;">
+            <div id="container"  data-highcharts-chart="2">
+            </div>
+            <!--右边-->
+            <div id="containertable">
+                <div style="border:1px solid #f00;font-size:12px">
+                    <table border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="25%" style="color:#00FFFF">@T("委比")</td>
+                                <td width="25%" align="right" id="committee" style="color:#ff0000">--%</td>
+                                <td width="25%" style="color:#00FFFF">&nbsp;@T("委差")</td>
+                                <td width="25%" align="right" id="commission" style="color:#ff0000">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table border="0" width="100%" style="border-top:1px solid #f00" id="sellOrder">
+                        <tbody id="trade_record"></tbody>
+                    </table>
+
+                    <table border="0" width="100%" style="border-top:1px solid #f00">
+                        <tbody>
+                            <tr>
+                                <td width="25%" style="color:#00FFFF">@T("最新价")</td>
+                                <td width="25%" id="ttc_currentprice" align="right" style="color: rgb(0, 255, 0);">0</td>
+                                <td width="25%" style="color:#00FFFF">&nbsp;@T("均价")</td>
+                                <td width="25%" id="ttc_avg" align="right" style="color: rgb(0, 255, 0);">0</td>
+                            </tr>
+                            <tr>
+                                <td width="25%" style="color:#00FFFF">@T("涨跌")</td>
+                                <td width="25%" id="ttc_change" align="right" style="color: rgb(0, 255, 0);">0</td>
+                                <td width="25%" style="color:#00FFFF">&nbsp;@T("开盘价")</td>
+                                <td width="25%" id="ttc_openprice" align="right" style="color: rgb(255, 255, 255);">0</td>
+                            </tr>
+                            <tr>
+                                <td width="25%" style="color:#00FFFF">@T("幅度")</td>
+                                <td width="25%" id="ttc_scale" align="right" style="color: rgb(0, 255, 0);">0%</td>
+                                <td width="25%" style="color:#00FFFF">&nbsp;@T("最高价")</td>
+                                <td width="25%" id="ttc_hightprice" align="right" style="color: rgb(255, 0, 0);">0</td>
+                            </tr>
+                            <tr>
+                                <td width="25%" style="color:#00FFFF">@T("成交量")</td>
+                                <td width="25%" id="ttc_volume" align="right" style="color:#ffff00">0</td>
+                                <td width="25%" style="color:#00FFFF">&nbsp;@T("最低价")</td>
+                                <td width="25%" id="ttc_lowprice" align="right" style="color: rgb(0, 255, 0);">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table border="0" width="100%" style="border-top:1px solid #f00" id="trade_record">
+                        <tbody id="top28transaction"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+
+    <script type="text/javascript">
+    //$(function () {
+    //    $.getJSON('/usercenter/home/gethighstock', function (data) {
+    //        var retTrade = data;
+    //        var crrentData = [];
+    //        new highStockChart('container', retTrade, crrentData);
+    //    });
+    //});
+
+   function tradeChart() {
+        $.getJSON('/usercenter/home/gethighstock', function (data) {
+            var retTrade = data;
+            var crrentData = [];
+            new highStockChart('container', retTrade, crrentData);
+        });
+    }
+
+    $(function () {
+        //$("#container").width($(document.body).width() - 260 - 10 - 10 - 30);
+        //if ($(document).height() - 30 - 25 > 550) {
+        //    $("#container").height($(document).height() - 30 - 25);
+        //    $("#data_container").height($(document).height() - 30 - 55);
+        //}
+        //$(window).resize(function () {
+        //    $("#container").width($(document.body).width() - 260 - 10 - 10 - 30);
+        //    if ($(document).height() - 30 - 25 > 550) {
+        //        $("#container").height($(document).height() - 30 - 25);
+        //        $("#data_container").height($(document).height() - 30 - 55);
+        //    }
+        //});
+        tradeChart();
+        setInterval(tradeChart, "20000");
+
+    });
+
+    var intervalds = setInterval(function () {
+        $.getJSON("/usercenter/trade/gettop10entrusts", function (data) {
+            var strHtml1 = '';
+            var sindex = 0;
+            var totalsell = 0;
+            var openprice = parseFloat($("#ttc_openprice").html());
+            $.each(data.data0, function (index, content) {
+                strHtml1 += '<tr><td width="25%" style="color:#00FFFF">' + content.ds + getnumber(data.data0.length - index) + '</td>';
+                if (content.Price > openprice) {
+                    strHtml1 += '<td width="25%" align="right" style="color:#f00">' + content.Price.toFixed(4) + '</td>';
+                }
+                else {
+                    strHtml1 += '<td width="25%" align="right" style="color:#0f0">' + content.Price.toFixed(4) + '</td>';
+                }
+                  strHtml1 += '<td width="50%" align="right" style="color:#ffff00">' + content.Quantity.toFixed(4) + '</td></tr>';
+                  totalsell += content.Quantity;
+                  sindex++;
+            });
+            var semptycell = "";
+            if (sindex < 5) {
+                for (var i = 0; i < (5 - sindex) ; i++) {
+                    semptycell += '<tr><td width="25%" style="color:#00FFFF">@T("卖")' + getnumber(5 - i) + '</td>';
+                    semptycell += '<td width="25%" align="right" style="color:#0f0">-</td>';
+                    semptycell += '<td width="50%" align="right" style="color:#ffff00">-</td></tr>';
+                }
+            }
+            strHtml1 = semptycell + strHtml1;
+
+            var bindex = 0;
+            var totalbuy = 0;
+            strHtml1 += '<tr><td colspan="4" style="border-top:1px solid #dc251a"></td></tr>';
+            $.each(data.data1, function (index, content) {
+                strHtml1 += '<tr><td width="25%" style="color:#00FFFF;">' + content.ds + getnumber(index + 1) + '</td>';
+                if (content.Price > openprice) {
+                    strHtml1 += '<td width="25%" align="right" style="color:#f00">' + content.Price.toFixed(4) + '</td>';
+                }
+                else {
+                    strHtml1 += '<td width="25%" align="right" style="color:#0f0">' + content.Price.toFixed(4) + '</td>';
+                }
+                strHtml1 += '<td width="50%" align="right" style="color:#ffff00">' + content.Quantity.toFixed(4) + '</td></tr>';
+                totalbuy += content.Quantity;
+                bindex++;
+            });
+            var bemptycell = "";
+            if (bindex < 5) {
+                for (var i = 0; i < (5 - bindex) ; i++) {
+                    bemptycell += '<tr><td width="25%" style="color:#00FFFF;">@T("买")' + getnumber(i + bindex + 1) + '</td>';
+                    bemptycell += '<td width="25%" align="right" style="color:#0f0">-</td>';
+                    bemptycell += '<td width="50%" align="right" style="color:#ffff00">-</td></tr>';
+                }
+            }
+            strHtml1 = strHtml1 + bemptycell;
+            $("#commission").html((totalbuy - totalsell).toFixed(4));
+            $("#committee").html(((totalbuy - totalsell)/(totalbuy+totalsell)).toFixed(2) + "%");
+            //$('#selllist').html(strHtml2);
+            $('#trade_record').html(strHtml1);
+        });
+
+        $.getJSON("/usercenter/home/getprice", function (data) {
+            $("#ttc_currentprice").html(data.data.ClosePrice.toFixed(4));
+            $("#ttc_change").html(data.data.UpsAndDownsPrice.toFixed(4));
+            $("#ttc_openprice").html(data.data.OpenPrice.toFixed(4));
+            $("#ttc_hightprice").html(data.data.HightPrice.toFixed(4));
+            $("#ttc_lowprice").html(data.data.LowPrice.toFixed(4));
+            $("#ttc_volume").html(data.data.Volume);
+            $("#ttc_avg").html(((data.data.HightPrice + data.data.LowPrice)/2).toFixed(4));
+            $("#ttc_scale").html((data.data.UpsAndDownsScale * 100).toFixed(0) + "%");
+        });
+        $('#top28transaction').load('/UserCenter/trade/TOP28Transaction');
+    }, 600);
+
+    function getnumber(i)
+    {
+        switch (i)
+        {
+            case 1:
+                return "①";
+            case 2:
+                return "②";
+            case 3:
+                return "③";
+            case 4:
+                return "④";
+            case 5:
+                return "⑤";
+        }
+    }
+    </script>

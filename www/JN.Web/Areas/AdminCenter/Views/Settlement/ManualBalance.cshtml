@@ -1,0 +1,152 @@
+﻿@model JN.Data.Settlement
+@{
+    Layout = "~/Areas/AdminCenter/Views/Shared/_Layout.cshtml";
+}
+<!-- Content -->
+<div id="content">
+    <!-- Breadcrumb -->
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")" class="glyphicons home"><i></i> 首页</a></li>
+        <li class="divider"></li>
+        <li>@ViewBag.Title</li>
+        <li></li>
+    </ul>
+    <div class="separator bottom"></div>
+    <!-- // Breadcrumb END -->
+    <div class="innerLR">
+        <form class="form-horizontal" id="validation-form" method="post" onsubmit="CheckPost();">
+            <input name="CheckValue" type="hidden" value="@ViewBag.CheckForm" />
+            <div class="control-group">
+                <label class="control-label" for="adminname">上次分红时间：</label>
+                <div class="controls">
+                    @(Model == null ? "从未分红过" : Model.CreateTime.ToString())
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="adminname">分红总期数：</label>
+                <div class="controls">
+                    @ViewBag.MaxPeriod
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="adminname">分红期数：</label>
+                <div class="controls">
+                    <input type="text" id="doPeriod" name="doPeriod" class="form-control" style="width:100px" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="adminname">操作口令：</label>
+                <div class="controls">
+                    <input type="text" id="doString" name="" class="form-control" onkeyup="Check();"  style="width:100px" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="adminname">状态：</label>
+                <div class="controls">
+                    <input type="text" id="msg" name="" class="form-control" style="width:200px" value="分红操作未开始" readonly/>
+                </div>
+            </div>
+            @*<div class="control-group">
+                    <label class="control-label" for="adminname">本期分红人数：</label>
+                    <div class="controls">
+                    </div>
+                </div>*@
+
+            <div class="control-group">
+                <label class="control-label" for="adminname">分红提示：</label>
+                <div class="controls">
+                   @* <label>V2.0 点击“开始分红”后，请耐心等待系统弹出分红结果。切勿关闭站点或点击其他页面。</label>*@
+                    <label>V3.0 如出现“检测到重复提交，已屏蔽！”，则系统监测到有重复提交操作，分红仍正常，多余操作将自动被屏蔽！</label>
+                    <label>V4.0 分红期数：输入分红期数，系统内有该期则补发，无则新发！</label>
+                    <label style="color:red">V5.0 操作口令：输入“1020”系统开始操作分红功能！</label>
+                </div>
+            </div>
+            <div class="hr hr-dotted"></div>
+
+            @*<div class="control-group">
+                    <label class="control-label" for="adminname">分红按钮：</label>
+                    <div class="controls">
+                        <button type="submit" id="btnPost">
+                            <i class="icon-ok bigger-110"></i>
+                            开始操作
+                        </button>
+                    </div>
+                </div>*@
+
+            <br />
+            @*<div class="clearfix form-actions">
+                    <div class="col-md-offset-3 col-md-9">
+                        <button type="button" class="btn btn-info dofh" data-value="2">
+                            <i class="icon-ok bigger-110"></i>
+                            经理分红（操作二，请完成"操作一"后再点击"操作二"）
+                        </button>
+                    </div>
+                </div>*@
+        </form>
+
+        @*<div class="row">
+                <div class="col-xs-12">
+                    <h4>手动分红进度</h4>
+                    <div class="progress progress-striped" data-percent="100%">
+                        <div class="progress-bar progress-bar-success" style="width: 100%;"></div>
+                    </div>
+                    <p id="info"></p>
+                </div><!-- /span -->
+            </div><!-- /row -->*@
+        @*<div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <a href="/@(JN.Services.Tool.ConfigHelper.GetConfigString("AdminPath"))/balance/daybalance" class="btn btn-info">
+                        <i class="icon-ok bigger-110"></i>
+                        手动进行日结算（如果系统设定秒结则无需进行日结算）
+                    </a>
+                </div>
+            </div>*@
+
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+@section scripts{
+    @*<script type="text/javascript">
+            setTimeout('check()', 1000);
+            function check() {
+                $.getJSON("@(Url.Action("getproc"))", function (data, textStatus, jqXHR) {
+                    // data 是该请求返回的数据(可能经过处理)
+                    // textStatus 可能是"success"、 "notmodified"等
+                    // jqXHR 是经过jQuery封装的XMLHttpRequest对象(保留其本身的所有属性和方法)
+
+                    var sc = parseInt(data.data.CurrentRow / data.data.TotalRow * 100);
+                    $(".progress").attr("data-percent", sc + "% " + data.data.CurrentRow + "/" + data.data.TotalRow);
+                    $(".progress-bar").attr("style", "width:" + sc + "%")
+                    $("#tbname").html(data.data.CurrentTable);
+                    $("#info").html(data.data.TransInfo);
+                    setTimeout('check()', 1000);
+                });
+            };
+
+            $(".dofh").on("click", function () {
+                //var fhje = $("input[name='fhje']").val();
+                var type = $(this).attr("data-value");
+                var gourl = "@(Url.Action("doFH"))?fhje=0&type=" + type;// + fhje;
+                window.location.href = gourl;
+            });
+        </script>*@
+}
+<script type="text/javascript">
+    function CheckPost() {
+        $('#btnPost').attr("disabled", "disabled");
+    }
+
+
+    function Check() {
+        var doPeriod = $('#doPeriod').val();
+        var isstring = $('#doString').val();
+        if (isstring == "1020") {
+            $('#doString').attr("readonly", "readonly");
+            $('#msg').val("正在分红中..请等候");
+            var gourl = "@(Url.Action("doFH"))?doPeriod=" + doPeriod;// + fhje;
+            window.location.href = gourl;
+        }
+    }
+</script>

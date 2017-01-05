@@ -1,0 +1,91 @@
+﻿@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+    var userEntity = JN.Services.UserLoginHelper.CurrentUser();
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+}
+
+
+<div class="ad-flash-bg">
+    <div class="logo_small">
+        <a class="small_sircle"></a>
+    </div>
+    <span class="small_line"></span>
+    <div class="ad-flash">
+        <object type="application/x-shockwave-flash" data="../images/146374264524.swf" width="457" height="334" id="js-ele-slider-swf" style="visibility: visible;">
+            <param name="wmode" value="transparent">
+            <param name="quality" value="high">
+            <param name="flashvars" value="xml_url=/cl/index.php,MLoopAD">
+        </object>
+        <script>
+            (function () {
+                var flashvars = {},
+                    attributes = {
+                    },
+                    params = {
+                        wmode: 'transparent',
+                        quality: 'high',
+                        flashvars: 'xml_url=/cl/index.php,MLoopAD'
+                    };
+                swfobject.embedSWF('../images/146374264524.swf', 'js-ele-slider-swf', '457', '334', '8.0.35.0', '/cl/tpl/commonFile/swf/expressInstall.swf', flashvars, params, attributes);
+            })();
+        </script>
+    </div>
+</div>
+<div class="first-center clearfix">
+    <div class="first-left">
+        <a href="javascript:BBOnlineService();" onclick="window.open('http://kefu.qycn.com/vclient/chat/?websiteid=108414&amp;clerkid=804566&amp;clienturl=http%3A//www.sf6800.com','_blank', 'toolbar=no,scrollbars=no,menubar=no,status=no,resizable=yes,location=no')" target="_blank" class="first-service"></a>
+        <!-- 最新消息 -->
+        <div class="clear first-news-wrap clearfix">
+            <div class="first-news-item ele-msg-cp">
+                <marquee onmouseover="this.stop()" onmouseout="this.start()" width=100% direction=up behavior=scroll scrollamount=1 height=100%>
+                    @{
+                        var NoticeList = MvcCore.Unity.Get<JN.Data.Service.INoticeService>().List().OrderByDescending(x => x.ID).Take(4).ToList();
+                        if (NoticeList.Count > 0)
+                        {
+                            foreach (var item in NoticeList)
+                            {
+                                <div><a href="">@item.Title</a></div>
+                            }
+                        }
+                    }
+                
+                </marquee>
+            </div>
+        </div>
+    </div>
+    <div class="first-game-wrap">
+
+
+        <div class="ele-firstgame-wrap" onselectstart="return false">
+            <div class="clearfix ele-firstgame" id="js-firstgame-slider">
+                <a href="javascript://" target="mem_index" class="ele-firstgame-1 js-ele-firstgame-fade" style="background-position-x: -125px;"> <span style="background-position-x: 0px;"></span> </a>
+                <a href="javascript://" target="mem_index" class="ele-firstgame-2 js-ele-firstgame-fade" style="background-position-x: -125px;"> <span style="background-position-x: 0px;"></span> </a>
+                <a href="javascript://" target="mem_index" class="ele-firstgame-3 js-ele-firstgame-fade" style="background-position-x: -125px;"> <span style="background-position-x: 0px;"></span> </a>
+                <a href="javascript://" target="mem_index" class="ele-firstgame-4 js-ele-firstgame-fade" style="background-position-x: -125px;"> <span style="background-position-x: 0px;"></span> </a>
+
+            </div>
+        </div>
+        <script>
+            $('.js-ele-firstgame-fade > span').hover(
+                function () {
+                    $(this).css("background-position-x", "-125px")
+                        .parent()
+                        .css("background-position-x", "0");
+                }, function () {
+                    $(this).css("background-position-x", "0")
+                        .parent()
+                        .css("background-position-x", "-125px");
+                }
+            );
+        </script>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div> 
+        hello world
+        <a href="###" class="bt" data-value="12" data-rel="tooltip" title="解除不可分红">
+           ajax
+        </a>
+    </div>
+    <script>
+        $(".bt").on("click", function () {
+            var id = $(this).attr("data-value");
+            bootbox.confirm('确定操作吗?', function (result) {
+                if (result) {
+                    $.post('@(Url.Action("add"))', { id: id }, function (data) {
+                        alert(data.Message) ;
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

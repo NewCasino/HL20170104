@@ -1,0 +1,100 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model PagedList.PagedList<JN.Data.CFBSubscribe>
+@{
+    ViewBag.Title = "股权交易大厅";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+    //最新价格
+    decimal currentprice = JN.Services.Manager.CFB.getcurrentprice();
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+
+        <div id="content">
+
+            <div class="box">
+                <div class="my-grid" id="order-grid">
+                    <table class="items table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr>
+                                <th width="15%">@T("创建时间")</th>
+                                @*<th width="7%">@T("买/卖")</th>*@
+                                <th width="11%">@T("买入数量")</th>
+                                <th width="9%">@T("买入价格")</th>
+                                <th width="11%">@T("买入总价")</th>
+                                <th width="10%">@T("未解冻数量")</th>
+                                @*<th width="10%">@T("手续费")</th>*@
+                                <th width="8%">@T("状态")</th>
+                                <th class="button-column" width="9%">@T("操作")</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count > 0)
+                            {
+                                for (int i = 0; i < Model.Count; i++)
+                                {
+                                    var item = Model[i];
+                                    int jdjgfz = cacheSysParam.SingleAndInit(x => x.ID == 2405).Value2.ToInt();
+
+                            <tr>
+                                <td>@item.CreateTime</td>
+                                @*<td class="@(item.Direction == 1 ? "sell" : "buy")">@(typeof(JN.Data.Enum.TradeDirection).GetEnumDesc(item.Direction))</td>*@
+                                <td>@(item.SubscribeNumber.ToString("F2"))</td>
+                                <td>@item.Price.ToString("F3")</td>
+                                <td>@(item.TotalAmount.ToString("F2"))</td>
+                                <td>@((item.SubscribeNumber - item.CanBeUsed ?? 0).ToString("F2"))</td>
+                                @*<td>$@(item.Poundage.ToString("F3"))</td>*@
+                                <td>@typeof(JN.Data.Enum.SubscribeStatus).GetEnumDesc(item.Status)</td>
+                                @if (item.Status <= (int)JN.Data.Enum.SubscribeStatus.PartOfUsed)
+                                {
+                                    if (item.CreateTime.AddMinutes(jdjgfz) <= DateTime.Now)
+                                    {
+                                        <td><a class="btn btn-success btn-mini" href="###" onclick="thawstock(@item.ID)">马上解冻</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td><a class="btn btn-danger btn-mini">剩余:@(JN.Services.Tool.DateTimeDiff.DateDiff_full(item.CreateTime.AddMinutes(jdjgfz), DateTime.Now))</a></td>
+                                    }
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <!--S 翻页页码  -->
+                    @Html.PagedListPager((IPagedList)Model, page => Url.Action(ViewContext.RouteData.Values["action"].ToString(),
+                       JN.Services.Tool.StringHelp.GetQueryString(HttpUtility.ParseQueryString(Request.Url.Query), page)), new PagedListRenderOptions() { ContainerDivClasses = new string[] { "pagination pagination-small pull-right" } })
+
+
+                    <!--E 翻页页码  -->
+                </div>
+            </div>
+        </div><!-- content -->
+<script type="text/javascript" src="/js/trade.js"></script>
+<link href="~/css/trade.css" rel="stylesheet" />
+<script>
+
+
+    function thawstock(id) {
+        $.post('@(Url.Action("thawstock"))', { id: id }, function (data) {
+            if (data == 'ok') {
+                alert("@(T("恭喜您，解冻成功!"))");
+                location.href = "@(Url.Action("TTC"))";
+            }
+            else
+                alert(data);
+        });
+    }
+    </script>

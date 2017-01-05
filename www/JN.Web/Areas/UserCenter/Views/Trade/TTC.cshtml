@@ -1,0 +1,389 @@
+﻿@{
+    ViewBag.Title = "FC币交易大厅";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+
+    //最新价格
+    decimal currentprice = JN.Services.Manager.Stocks.getcurrentprice();
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<script type="text/javascript" src="/js/trade.js"></script>
+<link href="~/css/trade.css" rel="stylesheet" />
+<link href="~/css/styles.css" rel="stylesheet" />
+<div class="row-fluid">
+
+    @if (MvcCore.Unity.Get<JN.Data.Service.IStockChartDayService>().List().Count() > 0)
+    {
+    <div class="chart_title mt20">X Francis Swiss Exchange<div style="float:right;"><a href="@(Url.Action("HighStock"))" target="_blank">&gt;&gt; @T("FC币行情图表")</a></div></div>
+        <!--K线内容-->
+        <div id="chart_div"></div>
+    }
+
+        <input id="ttc_currentprice" type="hidden" />
+    <div class="box mt20">
+        <!--买入、卖出、买卖盘S-->
+        <div class="trade_area">
+            <div class="trade_sub_border col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <div class="trade_title blue">@T("买入FC币")</div>
+                @using(Ajax.BeginForm("TTCIn", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "frmsell", @class = "" }))
+                            {
+                    <ul>
+                        <li><span>@T("最佳买价")：</span> <span style="color:#f00" id="bprice">@(JN.Services.Manager.Stocks.getcurrentprice().ToString("F4"))$</span></li>
+                        <li><span>@T("可用余额")：</span> <span id="myrmb">@(Umodel.Wallet2002.ToString("F4"))</span> $</li>
+                        <li><span>@T("今日价格范围")：</span> <span class="pricerang">0$　～　0$</span></li>
+                        <li>
+                            <span>@T("买入价格")：</span> <span>
+                                                   <input type="text" class="fr input" value="0" onkeyup="buysumprice();" id="buyprice" name="buyprice" />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>
+                        <li><span>@T("可买数量")：</span> <span><strong id="buymax"></strong></span></li>
+                        <li>
+                            <span>@T("买入数量")：</span> <span>
+                                                   <input type="text" class="fr input" id="buynumber" value="0" onkeyup="vNum(this, 4); buysumprice();" name="buynumber" />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>
+                        <li>
+                            <span>@T("成交金额")：</span> <span>
+                                                   <input type="text" class="fr input" disabled="disabled" id="buymoney" />
+                            </span>
+                        </li>
+                        <li>
+                            <span style="color:#f00">@T("二级密码")：</span> <span>
+                            <input type="password" name="tradeinPassword" id="tradeinPassword" class="fr input" />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>
+                        <li style="margin-top:5px;text-align:center;"><input type="submit" style="width:222px;" class="button button-caution button-rounded button-large" value='@T("买入(FC币)")' /></li>
+                    </ul>
+                }
+            </div>
+            <div class="trade_sub_border col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <div class="trade_title blue">@T("卖出FC币")</div>
+               @using(Ajax.BeginForm("TTCOut", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "frmsell", @class = "" }))
+                            {
+                    <ul>
+                        <li><span>@T("最佳卖价")：</span> <span style="color:#f00" id="sprice">@(JN.Services.Manager.Stocks.getcurrentprice().ToString("F4"))$</span></li>
+                        <li><span>@T("FC币总量")：</span> <span id="myxb">@(Umodel.Wallet2003.ToString("F4"))</span> RC</li>
+                        <li><span>@T("今日价格范围")：</span> <span class="pricerang">0$　～　0$</span></li>
+                        <li><span>@T("卖出价格")：</span> <span><input type="text" value="0" class="fr input" name="sellprice" id="sellprice" onkeyup="vNum(this, 4); sellsumprice(); " /></span></li>
+                        <li><span>@T("可卖数量")：</span> <span><strong id="sellmax">0</strong></span></li>
+                        <li>
+                            <span>@T("卖出数量")：</span> <span>
+                            <input type="text" value="0" class="fr input" onkeyup="vNum(this, 2); sellsumprice();" id="sellnumber" name="sellnumber" />
+                            </span>
+                        </li>
+                        <li><span>@T("成交金额")：</span> <span><input type="text" class="fr input" id="sellmoney" disabled="disabled" /></span></li>
+                        <li>
+                            <span style="color:#f00">@T("二级密码")：</span> <span>
+                             <input type="password" class="fr input" name="tradeoutPassword" id="tradeoutPassword" />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>
+                        <li style="margin-top:5px; text-align:center;">
+
+                            <input type="submit" style="width:222px;" class="button button-action button-rounded button-large" value='@T("卖出(FC币)")' />
+                        </li>
+                    </ul>
+               }
+            </div>
+            <div class="trade_sub_noborder col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <div class="trade_title blue">@T("买卖盘")</div>
+                <ul class="trade_record">
+
+                </ul>
+            </div>
+        </div>
+        <!--买入、卖出、买卖盘E-->
+    </div>
+    <!--当前委托-->
+    <table class="bordered">
+        <caption class="blue">@T("当前委托")<div style="float:right; font - weight:normal; font - size:12px; "><a href="@Url.Action("Order")">more</a></div></caption>
+            <tr>
+                <th width="20%">@T("委托时间")</th>
+                <th width="16%">@T("类型")</th>
+                <th width="16%">@T("价格")</th>
+                <th width="16%">@T("数量")</th>
+                <th width="16%">@T("交易金额")</th>
+                <th>@T("操作")</th>
+            </tr>
+        <tbody id="myentrusts"></tbody>
+    </table>
+    <!--我的交易记录-->
+    <table class="bordered">
+        <caption class="blue">@T("我的交易记录")<div style="float:right; font - weight:normal; font - size:12px; "><a href="@Url.Action("Transaction")">more</a></div></caption>
+        <tbody>
+            <tr>
+                <th width="20%">@T("交易时间")</th>
+                <th width="20%">@T("类型")</th>
+                <th width="20%">@T("价格")</th>
+                <th width="20%">@T("数量")</th>
+                <th width="20%">@T("交易金额")</th>
+
+            </tr>
+            @{
+                var lst = MvcCore.Unity.Get<JN.Data.Service.IStockTradeService>().List(x => x.BuyUID == Umodel.ID || x.SellUID == Umodel.ID).OrderByDescending(x => x.ID).Take(5).ToList();
+        if (lst.Count > 0)
+        {
+            foreach (var item in lst)
+            {
+         
+            <tr>
+                <td>
+                    @item.CreateTime
+                </td>
+                <td>@T(item.BuyUID == Umodel.ID ? "买入" : "卖出")</td>
+                <td>@item.Price.ToString("F4")</td>
+                <td>@(item.Quantiry.ToString("F4"))</td>
+                <td>@item.TotaAmount.ToString("F4")</td>
+            </tr>
+            }
+            }
+            }
+        </tbody>
+    </table>
+
+
+</div>
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script type="text/javascript">
+    $(function () {
+  
+
+        require.config({
+            paths: {
+                echarts: '/js/echarts'
+            }
+        });
+        require(['echarts',
+                  'echarts/theme/dark',
+                  'echarts/chart/k'],
+
+            function (ec, theme) {
+                var myChart = ec.init(document.getElementById('chart_div'), theme);
+                var option = {
+
+                    grid: {
+                        x: 50,
+                        y: 20,
+                        x2: 20,
+                        y2: 60
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function (params) {
+                            var res = params[0].seriesName + '  ' + params[0].name;
+                            res += '<br/>  Open : ' + params[0].value[0] + '$  High : '
+                                    + params[0].value[3] + '$';
+                            res += '<br/>  Close : ' + params[0].value[1] + '$  Low : '
+                                    + params[0].value[2] + '$';
+                            return res;
+                        }
+                    },
+
+                    toolbox: {
+                        show: false,
+                        feature: {
+                            mark: {
+                                show: true
+                            },
+                            dataZoom: {
+                                show: true
+                            },
+                            dataView: {
+                                show: true,
+                                readOnly: false
+                            },
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar']
+                            },
+                            restore: {
+                                show: true
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    dataZoom: {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: true,
+                        axisTick: {
+                            onGap: false
+                        },
+                        splitLine: {
+                            show: false
+                        },
+                        data: []
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        scale: true,
+                        boundaryGap: [0.01, 0.01]
+                    }],
+                    series: [{
+                        name: 'XCoin',
+                        type: 'k',
+                        data: []
+                    }]
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/usercenter/home/getkstock",
+                    data: "t=" + new Date(),
+                    dataType: 'json',
+                    success: function (data) {
+                            option.xAxis[0].data = data.dates;
+                            option.series[0].data = data.datas;
+                            myChart.setOption(option);
+                    }
+                });
+            });
+    });
+
+</script>
+<script>
+    var intervalds = setInterval(function () {
+        $.getJSON("/usercenter/trade/gettop10entrusts", function (data) {
+            var strHead = '<li class="trade_recoed_title"><span>@(T("类型"))</span><span>@(T("价格"))($)</span><span>@(T("数量"))(RC)</span><span>@(T("金额"))($)</span></li>';
+
+            var strBody = "";
+            var sindex = 0;
+            $.each(data.data0, function (index, content) {
+                strBody += '<li style="color:#23a800;"><span>' + content.ds + '(' + (data.data0.length - index) + ')</span>';
+                strBody += '<span onclick="$(\'#sellprice\').val(\'' + content.Price.toFixed(4) + '\')">' + content.Price.toFixed(4) + '</span>';
+                strBody += '<span>' + content.Quantity.toFixed(4) + '</span>';
+                strBody += '<span>' + (content.Quantity * content.Price).toFixed(4) + '</span></li>';
+                if (index == data.data0.length - 1) {
+                    $("#bprice").html(content.Price.toFixed(4) + "$");
+                    if ($("#buyprice").val() == "0" || $("#buyprice").val() == "")
+                    {
+                        $("#buyprice").val(content.Price.toFixed(4));
+                        $("#buymax").html((parseFloat($("#myrmb").html()) / content.Price).toFixed(4));
+                        if ($("#buynumber").val() == "0") {
+                            if ($("#myrmb").html() != "" && parseFloat($("#myrmb").html()) > 0) {
+                                $("#buynumber").val($("#buymax").html());
+                                $("#buymoney").val($("#myrmb").html());
+                            }
+                        }
+                    }
+                }
+                sindex++;
+            });
+    
+            var semptycell = "";
+            if (sindex < 5)
+            {
+                for (var i = 0; i < (5 - sindex) ; i++) {
+                    semptycell += '<li style="color:#23a800;"><span>@(T("卖"))(' + (5 - i) + ')</span>';
+                    semptycell += '<span>-</span>';
+                    semptycell += '<span>-</span>';
+                    semptycell += '<span>-</span></li>';
+                }
+            }
+            strBody = semptycell + strBody;
+           
+            var bindex = 0;
+            $.each(data.data1, function (index, content) {
+                strBody += '<li style="color:#dc251a;';
+                if (index == 0) {
+                    strBody += ' border-top:2px solid #dc251a';
+                }
+                strBody += '"><span>' + content.ds + '(' + (index + 1) + ')</span>';
+                strBody += '<span onclick="$(\'#sellprice\').val(\'' + content.Price.toFixed(4) + '\')">' + content.Price.toFixed(4) + '</span>';
+                strBody += '<span>' + content.Quantity.toFixed(4) + '</span>';
+                strBody += '<span>' + (content.Quantity * content.Price).toFixed(4) + '</span></li>';
+                if (index == 0) {
+                    $("#sprice").html(content.Price.toFixed(4) + "$");
+                    if ($("#sellprice").val() == "0") {
+                        $("#sellprice").val(content.Price.toFixed(4));
+                        $("#sellmax").html((parseFloat($("#myxb").html()) * 0.05).toFixed(4));
+                        //if ($("#sellnumber").val() == "0" || $("#sellnumber").val() == "") {
+                        //    if ($("#myxb").html() != "" && parseFloat($("#myxb").html()) > 0) {
+                        //        $("#sellnumber").val($("#sellmax").html());
+                        //        $("#sellmoney").val((parseFloat($("#sellnumber").val()) * parseFloat($("#sellprice").val())).toFixed(4));
+                        //    }
+                        //}
+                    }
+                }
+                bindex++;
+            });
+            var bemptycell = "";
+            if (bindex < 5) {
+                for (var i = 0; i < (5 - bindex) ; i++) {
+                    bemptycell += '<li style="color:#dc251a;"><span>@(T("买"))(' + (i + bindex + 1) + ')</span>';
+                    bemptycell += '<span>-</span>';
+                    bemptycell += '<span>-</span>';
+                    bemptycell += '<span>-</span></li>';
+                }
+            }
+            strBody = strBody + bemptycell;
+            $('.trade_record').html(strHead + strBody);
+        });
+
+        $.getJSON("/usercenter/home/getopenprice", function (data) {
+            $("#ttc_currentprice").val(data.data.ClosePrice);
+
+            var openprice = data.data.OpenPrice;
+            var limtprice = data.data.OpenPrice * 0.1;
+            $(".pricerang").html((openprice - limtprice).toFixed(4) + "$　～　" + (openprice + limtprice).toFixed(4) + "$");
+            getuserinfo();
+        });
+    }, 600);
+
+    $('#myentrusts').load('/usercenter/trade/MyEntrusts');
+
+
+    function afterPost(data) {
+        if (data.Status == 200) {
+                //window.location.href = data.goUrl;
+                //alert("委托提交成功！");
+                $('#myentrusts').load('/usercenter/trade/myentrusts');
+                $("#buynumber").val('');
+                $("#sellnumber").val('');
+                $("#sellmoney").val('');
+                $("#buymoney").val('');
+                getuserinfo();
+                return;
+            } else {
+                alert(data.Message);
+                return false;
+            }
+    }
+
+    function getuserinfo()
+    {
+        $.getJSON("/usercenter/trade/getuserinfo", function (data) {
+            $("#myrmb").html(data.rmb.toFixed(4));
+            $("#myttc").html(data.lmtb.toFixed(4));
+        });
+    }
+
+    function canceltrade(id)
+    {
+        $.post('/usercenter/trade/cancelttc', { id: id }, function (data) {
+            if (data == 'ok')
+            {
+                alert("@(T("已成功取消委托！"))");
+                $('#myentrusts').load('/usercenter/trade/MyEntrusts');
+            }
+            else
+                alert(data);
+        });
+    }
+</script>

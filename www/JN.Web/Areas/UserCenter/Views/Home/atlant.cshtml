@@ -1,0 +1,235 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<!-- page specific plugin styles -->
+<div class="row">
+    @{
+       foreach (JN.Entity.TIndexWidget widget in ViewBag.Widgets)
+       {
+    <div class="col-md-3">
+        <!-- START WIDGET MESSAGES -->
+        <div class="widget widget-default widget-item-icon" onclick="location.href='@widget.Url';">
+            <div class="widget-item-left">
+                <span class="fa @widget.Icon"></span>
+            </div>
+            <div class="widget-data">
+                <div class="widget-int num-count">@widget.Value</div>
+                <div class="widget-title">@T(widget.Name)</div>
+                <div class="widget-subtitle">@T(widget.Description)</div>
+            </div>
+            <div class="widget-controls">
+                <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="" data-original-title="@T("移除")"><span class="fa fa-times"></span></a>
+            </div>
+        </div>
+        <!-- END WIDGET MESSAGES -->
+    </div>
+         }
+    }
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+
+        <!-- START SALES & EVENTS BLOCK -->
+        <div class="panel panel-default">
+            <div class="panel-heading ui-draggable-handle">
+                <div class="panel-title-box">
+                    <h3>Sales &amp; Event</h3>
+                    <span>Event "Purchase Button"</span>
+                </div>
+                <ul class="panel-controls" style="margin-top: 2px;">
+                    <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
+                    <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
+                            <li><a href="#" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-body padding-0">
+                <div class="chart-holder" id="dashboard-line-1" style="height: 200px; position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                    <svg height="200" version="1.1" width="307" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden; position: relative;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.1.2</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text x="24.5" y="163" text-anchor="end" font="10px &quot;Arial&quot;" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: sans-serif;" font-size="10px" font-family="sans-serif" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0</tspan></text><path fill="none" stroke="#e5e5e5" d="M37,163H282" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="24.5" y="128.5" text-anchor="end" font="10px &quot;Arial&quot;" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: sans-serif;" font-size="10px" font-family="sans-serif" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">5</tspan></text><path fill="none" stroke="#e5e5e5" d="M37,128.5H282" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="24.5" y="94" text-anchor="end" font="10px &quot;Arial&quot;" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: sans-serif;" font-size="10px" font-family="sans-serif" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">10</tspan></text><path fill="none" stroke="#e5e5e5" d="M37,94H282" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="24.5" y="59.5" text-anchor="end" font="10px &quot;Arial&quot;" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: sans-serif;" font-size="10px" font-family="sans-serif" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">15</tspan></text><path fill="none" stroke="#e5e5e5" d="M37,59.5H282" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="24.5" y="25" text-anchor="end" font="10px &quot;Arial&quot;" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: sans-serif;" font-size="10px" font-family="sans-serif" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">20</tspan></text><path fill="none" stroke="#e5e5e5" d="M37,25H282" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="241.16666666666666" y="175.5" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: sans-serif;" font-size="10px" font-family="sans-serif" font-weight="normal" transform="matrix(1,0,0,1,0,6)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2014-10-15</tspan></text><text x="118.66666666666666" y="175.5" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: sans-serif;" font-size="10px" font-family="sans-serif" font-weight="normal" transform="matrix(1,0,0,1,0,6)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2014-10-12</tspan></text><path fill="none" stroke="#33414e" d="M37,135.4C47.20833333333333,131.95,67.625,126.77499999999999,77.83333333333333,121.6C88.04166666666666,116.425,108.45833333333333,94.8625,118.66666666666666,94C128.875,93.1375,149.29166666666666,113.83749999999999,159.5,114.69999999999999C169.70833333333331,115.56249999999999,190.125,105.2125,200.33333333333331,100.9C210.54166666666666,96.5875,230.95833333333331,89.68749999999999,241.16666666666666,80.19999999999999C251.375,70.71249999999999,271.7916666666667,38.8,282,25" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#3fbae4" d="M37,149.2C47.20833333333333,145.75,67.625,139.7125,77.83333333333333,135.4C88.04166666666666,131.0875,108.45833333333333,115.56249999999999,118.66666666666666,114.69999999999999C128.875,113.83749999999999,149.29166666666666,127.6375,159.5,128.5C169.70833333333331,129.3625,190.125,125.05,200.33333333333331,121.6C210.54166666666666,118.14999999999999,230.95833333333331,111.25,241.16666666666666,100.9C251.375,90.55000000000001,271.7916666666667,54.325,282,38.8" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><circle cx="37" cy="135.4" r="4" fill="#33414e" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="77.83333333333333" cy="121.6" r="4" fill="#33414e" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="118.66666666666666" cy="94" r="4" fill="#33414e" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="159.5" cy="114.69999999999999" r="4" fill="#33414e" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="200.33333333333331" cy="100.9" r="4" fill="#33414e" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="241.16666666666666" cy="80.19999999999999" r="4" fill="#33414e" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="282" cy="25" r="4" fill="#33414e" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="37" cy="149.2" r="4" fill="#3fbae4" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="77.83333333333333" cy="135.4" r="4" fill="#3fbae4" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="118.66666666666666" cy="114.69999999999999" r="4" fill="#3fbae4" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="159.5" cy="128.5" r="4" fill="#3fbae4" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="200.33333333333331" cy="121.6" r="4" fill="#3fbae4" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="241.16666666666666" cy="100.9" r="4" fill="#3fbae4" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="282" cy="38.8" r="4" fill="#3fbae4" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle></svg><div class="morris-hover morris-default-style" style="left: 38.8333333333333px; top: 36px; display: none;">
+                        <div class="morris-hover-row-label">2014-10-11</div><div class="morris-hover-point" style="color: #3FBAE4">
+                            Sales:
+                            4
+                        </div><div class="morris-hover-point" style="color: #33414E">
+                            Event:
+                            6
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END SALES & EVENTS BLOCK -->
+
+    </div>
+    
+    <div class="col-md-4">
+
+        <!-- START VISITORS BLOCK -->
+        <div class="panel panel-default">
+            <div class="panel-heading ui-draggable-handle">
+                <div class="panel-title-box">
+                    <h3>Visitors</h3>
+                    <span>Visitors (last month)</span>
+                </div>
+                <ul class="panel-controls" style="margin-top: 2px;">
+                    <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
+                    <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
+                            <li><a href="#" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-body padding-0">
+                <div class="chart-holder" id="dashboard-donut-1" style="height: 200px;"><svg height="200" version="1.1" width="307" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden; position: relative; left: -0.3125px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.1.2</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><path fill="none" stroke="#33414e" d="M153.5,160A60,60,0,1,0,98.32297794171798,76.43103233529607" stroke-width="2" opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 1;"></path><path fill="#33414e" stroke="#ffffff" d="M153.5,163A63,63,0,1,0,95.56412683880387,75.25258395206087L70.73446691257698,64.64654850294411A90,90,0,1,1,153.5,190Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#3fbae4" d="M98.32297794171798,76.43103233529607A60,60,0,0,0,119.29715422682825,149.2967072025772" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#3fbae4" stroke="#ffffff" d="M95.56412683880387,75.25258395206087A63,63,0,0,0,117.58701193816967,151.76154256270607L105.0459684880067,169.8370018703177A85,85,0,0,1,75.33255208410047,66.61062914166943Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#fea223" d="M119.29715422682825,149.2967072025772A60,60,0,0,0,153.48115044438848,159.9999970391187" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#fea223" stroke="#ffffff" d="M117.58701193816967,151.76154256270607A63,63,0,0,0,153.4802079666079,162.99999689107466L153.47329646288367,184.99999580541817A85,85,0,0,1,105.0459684880067,169.8370018703177Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="153.5" y="90" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-style: normal; font-variant: normal; font-weight: 800; font-stretch: normal; font-size: 15px; line-height: normal; font-family: Arial;" font-size="15px" font-weight="800" transform="matrix(1.3636,0,0,1.3636,-55.8182,-36.7273)" stroke-width="0.7333333333333334"><tspan dy="6" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Returned</tspan></text><text x="153.5" y="110" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 14px; line-height: normal; font-family: Arial;" font-size="14px" transform="matrix(1.25,0,0,1.25,-38.375,-25.5)" stroke-width="0.8"><tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2,513</tspan></text></svg></div>
+            </div>
+        </div>
+        <!-- END VISITORS BLOCK -->
+
+    </div>
+</div>
+
+
+    @*<div class="alert alert-block alert-success">
+        <button type="button" class="close" data-dismiss="alert">
+            <i class="icon-remove"></i>
+        </button>
+
+        <i class="icon-ok green"></i>
+
+        欢迎使用
+        <strong class="green">
+            @(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName)后台管理系统
+            <small>(v1.0)</small>
+        </strong>
+        ,轻量级好用的后台管理系统.
+    </div>*@
+
+    <div class="row">
+        
+            <div class="col-sm-6 widget-container-span">
+                <div class="widget-box ">
+                    <div class="widget-header">
+                        <h4 class="lighter">@T("最新公告")</h4>
+
+                        <div class="widget-toolbar no-border">
+                            <a href="#" data-action="collapse">
+                                <i class="icon-chevron-up"></i>
+                            </a>
+
+                            <a href="#" data-action="close">
+                                <i class="icon-remove"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="widget-body">
+                        <div class="widget-main no-padding no-margin">
+                            <table class="table table-bordered table-striped">
+                                @{
+                                    string ggWhere = "Platform='会员平台'";
+                                    if (JN.BLL.users.IsLogin().IsAgent)
+                                    {
+                                        ggWhere += " or Platform='报单中心'";
+                                    }
+                                    List<JN.Entity.TNotice> ggLst = JN.BLL.notices.GetModelList(6, ggWhere, "IsTop,ID desc");
+                                    if (ggLst.Count > 0)
+                                    {
+
+                                        foreach (JN.Entity.TNotice notice in ggLst)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <span class="pull-right">@notice.CreateTime.ToString("yyyy-MM-dd")</span>
+                                                    <a href="/User/Notice/Detail/@notice.ID">
+                                                        @JN.Common.Utils.CutString(notice.Title, 0, 25)
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <tr><td>@T("暂无通告")</td></tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        <div class="col-sm-6 widget-container-span">
+            <div class="widget-box ">
+                <div class="widget-header">
+                    <h4 class="lighter">@T("登录历史")</h4>
+
+                    <div class="widget-toolbar no-border">
+                        <a href="#" data-action="collapse">
+                            <i class="icon-chevron-up"></i>
+                        </a>
+
+                        <a href="#" data-action="close">
+                            <i class="icon-remove"></i>
+                        </a>
+                    </div>
+                </div>
+           
+
+            <div class="widget-body">
+                <div class="widget-main no-padding no-margin">
+                    <table class="table table-bordered table-striped">
+                        @{
+                            List<JN.Entity.TActLog> actLst = JN.BLL.actlogs.GetModelList(6, "Location='/User/Login' and UID=" + JN.BLL.users.IsLogin().ID, "ID desc");
+                            if (actLst.Count > 0)
+                            {
+
+                                foreach (JN.Entity.TActLog log in actLst)
+                                {
+                                    <tr>
+                                        <td>@log.IP</td>
+                                        <td>@log.ActContent</td>
+                                        <td>@log.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    </tr>
+                                }
+
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+            </div>
+        </div><!-- /row -->
+<!-- page specific plugin scripts -->
+<!--[if lte IE 8]>
+  <script src="/assets/js/excanvas.min.js"></script>
+<![endif]-->
+<script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('.widget-container-span').sortable({
+            connectWith: '.widget-container-span',
+            items: '> .widget-box',
+            opacity: 0.8,
+            revert: true,
+            forceHelperSize: true,
+            placeholder: 'widget-placeholder',
+            forcePlaceholderSize: true,
+            tolerance: 'pointer'
+        });
+    });
+</script>

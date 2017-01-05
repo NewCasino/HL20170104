@@ -1,0 +1,477 @@
+﻿@{
+    string controller = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+    string action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+    var sysEntity = MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().ListCache("syssetting").FirstOrDefault();
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+}
+
+
+
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://www.4311js.com/cl/?module=System&method=First -->
+<html class="first zh-cn ">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>@(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName)</title>
+    <link href="~/Theme/160817_Layout/css/standard.css" rel="stylesheet">
+    <link href="~/Theme/160817_Layout/css/sjs888.css" rel="stylesheet">
+    <link href="~/Theme/160817_Layout/css/font-awesome.css" rel="stylesheet">
+    <link href="~/Theme/160817_Layout/css/style.css" rel="stylesheet">
+    @*<script async src="~/Theme/160817_Layout/js/analytics.js"></script>
+        <script src="~/Theme/160817_Layout/js/jquery-1.7.2.min.js"></script>
+        <script src="~/Theme/160817_Layout/js/jquery-ui-1.8.21.custom.min.js"></script>
+        <link href="~/Theme/160817_Layout/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
+        <script src="~/Theme/160817_Layout/js/common.js"></script>
+        <script src="~/Theme/160817_Layout/js/upup.js" data-ltl="Y" id="upupjs"></script>
+        <script src="~/Theme/160817_Layout/js/float.js"></script>
+        <script src="~/Theme/160817_Layout/js/swfobject.js"></script>
+        <script src="~/Theme/160817_Layout/js/jquery.cookie.js"></script>*@
+
+    @*<script src="~/js/jquery-1.10.2.min.js"></script>*@
+    <script src="~/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="~/js/0817/jquery.min.js"></script>
+    @*<script src="~/js/jquery.min.js"></script>*@
+    @*<link href="~/Theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="/theme/neon/assets/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
+        <link rel="stylesheet" href="/theme/neon/assets/css/font-icons/entypo/css/entypo.css">*@
+    <link rel="stylesheet" href="/theme/neon/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="/theme/neon/assets/css/neon-forms.css">
+    <link rel="stylesheet" href="/theme/neon/assets/css/neon-core.css">
+    <link rel="stylesheet" href="/theme/neon/assets/css/neon-theme.css">
+    <link rel="stylesheet" href="/theme/neon/assets/css/custom.css">
+
+    <style type="text/css" media="screen">
+        #ele-logo-wrap {
+            visibility: hidden;
+        }
+
+        #js-ele-slider-swf {
+            visibility: hidden;
+        }
+    </style>
+
+</head>
+
+
+<body marginwidth="0" marginheight="0">
+    <div id="nav-game" class="ele-lsub-group" style="width: 111px; height: 93px; top: 149px; position: absolute; left: 755px; z-index: 999; display: none;">
+        <div class="lsub-inner-wrap" style="position: absolute; bottom: 0px;">
+            <span class="lsub-front-bg"></span>
+            <a href="" target="mem_index" title="BB电子" class="">BB电子</a>
+            <a href="" target="mem_index" title="MG电子" class="">MG电子</a>
+            <a href="" target="mem_index" title="GNS电子" class="">GNS电子</a>
+            <span class="lsub-back-bg"></span>
+        </div>
+    </div>
+    <div id="nav-ball" class="ele-lsub-group" style="display: none; width: 111px; height: 124px;">
+        <div class="lsub-inner-wrap" style="position: absolute; bottom: 0px;">
+            <span class="lsub-front-bg"></span>
+            <a href="" target="mem_index" title="BB体育" class="">BB体育</a>
+            <a href="" target="mem_index" title="体育投注" class="">体育投注</a>
+            <a href="" title="SBT体育" class="">SBT体育</a>
+            <a href="" target="mem_index" title="SBT电竞" class="">SBT电竞</a>
+            <span class="lsub-back-bg"></span>
+        </div>
+    </div>
+    <div class="mainBody-bg">
+        <div id="mainBody">
+            <div id="page-header">
+                <div class="header clearfix">
+                    <!-- LOGO -->
+                    <div class="header-logo">
+                        <div class="logo_g">
+                            <a class="circle"></a>
+                            <span></span>
+                        </div>
+                        <div class="logo_text"></div>
+                    </div>
+                    <div class="header-top clearfix">
+                        <!-- lang -->
+
+                        <div class="top-link-wrap">
+                            <a href="" target="_blank" data-color="#0BF90E|#18F7E3" class="js-article-color top-link" style="color: rgb(11, 249, 14);"> 微信扫码 -支付宝 </a> &nbsp;|&nbsp;
+                            <a href="" target="_blank" data-color="#DB2929|#D9D836" class="js-article-color top-link" style="color: rgb(219, 41, 41);"> 优惠活动在线办理 </a> &nbsp;|&nbsp;
+                            <a href="" target="_blank" data-color="#D723CA|#891ECC" class="js-article-color top-link" style="color: rgb(215, 35, 202);"> 客户在线办理业务</a> &nbsp;|&nbsp;
+                            <a href="" target="_blank" data-color="#0BF90E|#D9D836" class="js-article-color top-link" style="color: rgb(215, 35, 202);"> 系统公告</a> &nbsp;|&nbsp;
+                            <a href="" target="_blank" data-color="#ffffff" class="js-article-color top-link" style="color: rgb(219, 41, 41)"> 新手操作 </a>
+                            <a href="" target="_blank" data-color="#ffffff" class="js-article-color top-link" style="color: #ffffff">
+                                <ul>
+                                    @*@if (JN.Services.Tool.ConfigHelper.GetConfigBool("MultiLanguage"))
+                                        {*@
+                                    <li class="dropdown language-selector" style=" color:#777;">
+                                        @{
+                                            string langname = "zh-CN";
+                                            if (!string.IsNullOrEmpty(Request["lang"]))
+                                            {
+                                                langname = Request["lang"];
+                                            }
+                                            else
+                                            {
+                                                var cookie = System.Web.HttpContext.Current.Request.Cookies["Culture"];
+                                                if (cookie != null)
+                                                {
+                                                    langname = cookie.Value;
+                                                }
+                                            }
+                                        }
+                                        @T("语言"): &nbsp;
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-close-others="true" style="padding:0;">
+                                            <img src="/images/@(langname).png">
+                                        </a>
+
+                                        <ul class="dropdown-menu pull-right">
+                                            @{
+                                                var langlist = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 4000 && x.IsUse).OrderBy(x => x.Sort).ToList();
+                                                if (langlist.Any() && langlist.Count > 0)
+                                                {
+                                                    foreach (var param in langlist)
+                                                    {
+                                                        <li class="active">
+                                                            <a href="?lang=@param.Value2">
+                                                                <img src="/images/@(param.Value2).png">
+                                                                <span>@param.Value</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+
+                                    </li>
+                                    <li class="sep"></li>
+                                    @*}*@
+                                </ul>
+                            </a>
+                        </div>
+                        <!-- est -->
+                        <div class="est-wrap"> </div>
+
+
+
+                    </div>
+                    <!-- 主選單 -->
+                    <div id="navfixed" class="clear mainnav-placeholder">
+                        <div class="mainnav-wrap clear">
+                            <div class="mainnav">
+                                <ul class="clearfix lanrenzhijia">
+                                    <li id="LS-first" class="LS-first">
+                                        <a href="/Usercenter/home" target="" class=" current" title="@T("首页")" data-color="#FFFF00|#FF0000">@T("首页")</a>
+                                        <!-- 子選單 -->
+
+                                    </li>
+                                    <li id="LS-ball" class="LS-ball">
+                                        <a href="javascript://" class=" " title="@T("会员管理")">@T("会员管理")</a>
+                                        <!-- 子選單 -->
+                                        <div class="second">
+                                            <a href="/usercenter/user/add">@T("新增会员")</a>
+                                            @*<a href="/usercenter/user/mylink">@T("推广链接")</a>*@
+                                            <a href="/usercenter/user/UnActivation">@T("新会员")</a>
+                                            <a href="/usercenter/user/Activation">@T("会员列表")</a>
+                                            <a href="/usercenter/user/TreeView">@T("会员关系图")</a>
+                                        </div>
+                                    </li>
+                                    <li id="LS-AT3" class="LS-AT3">
+                                        <a href="javascript://" target="" class=" " title="@T("账户详情")">@T("账户详情")</a>
+                                        <!-- 子選單 -->
+                                        <div class="second">
+                                            <a href="/usercenter/user/modify">@T("账户资料")</a>
+                                            <a href="/usercenter/home/changepassword">@T("修改密码")</a>
+                                            <a href="/usercenter/user/Userinfo">@T("账户信息")</a>
+                                        </div>
+                                    </li>
+                                    <li id="LS-live" class="LS-live">
+                                        <a href="http://xyglw2.na23456.com/credit/login.html" target="_blank" class=" " title="@T("视讯直播")">@T("视讯直播")</a>
+                                        <!-- 子選單 -->
+                                        <div class="second">
+                                            @*<a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>*@
+                                        </div>
+                                    </li>
+                                    <li id="LS-game" class="LS-game">
+                                        <a href="javascript://" class="js-article-color" data-color="#FFFF00|#FF0000" title="@T("财务中心")" style="color: rgb(255, 255, 0);">@T("财务中心")</a>
+                                        <!-- 子選單 -->
+                                        <div class="second">
+                                            @*<a href="/usercenter/finance/ApplyInvestment">@T("申请充值")</a>
+                                                <a href="/usercenter/finance/ApplyInvertmentList">@T("待付款充值")</a>*@
+                                            <a href="/usercenter/finance/InvertmentList">@T("我的投资")</a>
+                                            <a href="/usercenter/finance/applytakecash?takeCoin=2001">@T("申请提现")</a>
+                                            <a href="/usercenter/finance/applyexchange?fromCoin=2001&toCoin=2003">@T("币种兑换")</a>
+                                            <a href="/usercenter/finance/RepeatInvestment">@T("申请复投")</a>
+                                        </div>
+                                    </li>
+                                    <li id="LS-ltlottery" class="LS-ltlottery">
+                                        <a href="javascript://" target="" class=" " title="@T("在线充值")">@T("在线充值")</a>
+                                        <!-- 子選單 -->
+                                        <div class="second">
+                                            <a href="/usercenter/finance/applyremittance">@T("在线充值")</a>
+                                            <a href="/usercenter/finance/remittance">@T("充值明细")</a>
+                                            @*<a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>*@
+                                        </div>
+                                    </li>
+                                    <li id="LS-memberexclusiveii" class="LS-memberexclusiveii">
+                                        <a href="javascript://" target="" class="js-article-color " data-color="#FFFF00|#FF0000" title="@T("财务明细")" style="color: rgb(255, 255, 0);">@T("财务明细")</a>
+                                        <!-- 子選單 -->
+                                        <div class="second">
+                                            <a href="/usercenter/finance/bonusdetail">@T("奖金明细")</a>
+                                            <a href="/usercenter/finance/accountdetail">@T("钱包明细")</a>
+                                            <a href="/usercenter/finance/takecash">@T("提现明细")</a>
+                                        </div>
+                                    </li>
+
+
+                                    <li id="LS-network" class="LS-network">
+                                        <a href="javascript://" onclick="window.open('http://kefu.qycn.com/vclient/chat/?websiteid=108414&amp;clerkid=804566&amp;clienturl=http%3A//www.sf6800.com','_blank', 'toolbar=no,scrollbars=no,menubar=no,status=no,resizable=yes,location=no')" target="_blank" class=" " title="@T("联系我们")">@T("联系我们")</a>
+                                        <!-- 子選單 -->
+                                        @*<div class="second">
+                                                <a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>
+                                            </div>*@
+                                    </li>
+                                    <li id="LS-mobile" class="LS-mobile">
+                                        <a href="" class="js-article-color " data-color="#FFFF00|#FF0000" title="@T("推广链接")" style="color: rgb(255, 255, 0);">@T("推广链接")</a>
+                                        <!-- 子選單 -->
+                                      <div class="second">
+                                          <a href="@(JN.Services.Tool.ConfigHelper.GetConfigBool("HaveHttps") ? "https://":"http://")@(HttpContext.Current.Request.Url.Host + "/UserCenter/Reg?r=" + Umodel.UserName)">@T("立刻跳转")</a>
+                                          <a href="/usercenter/user/mylink">@T("复制推广链接")</a>
+                                                @*<a href="javascript://">@T("会员管理")</a>
+                                                <a href="javascript://">@T("会员管理")</a>*@
+                                            </div>
+                                    </li>
+                                    <li id="LS-AT3" class="LS-AT3">
+                                        <a href="javascript://" target="" class=" " title="@T("公告邮件")">@T("公告邮件")</a>
+                                        <!-- 子選單 -->
+                                        <div class="second">
+                                            <a href="/usercenter/Notice/Index">@T("公告")</a>
+                                            <a href="/usercenter/Mail/Write">@T("写邮件")</a>
+                                            <a href="/usercenter/Mail/Inbox">@T("收件箱")</a>
+                                            <a href="/usercenter/Mail/Sent">@T("发件箱")</a>
+                                        </div>
+                                    </li>
+                                    <li id="LS-AT3" class="LS-AT3">
+                                        <a href="/usercenter/home/logout" target="" class=" " title="@T("安全退出")">@T("安全退出")</a>
+                                        <!-- 子選單 -->
+
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(function(){
+                    var lanrenzhijia = 0; // 默认值为0，二级菜单向下滑动显示；值为1，则二级菜单向上滑动显示
+                    if(lanrenzhijia ==0){
+                        $('.mainnav li').hover(function(){
+                            $('.second',this).css('top','40px').show(100);
+                        },function(){
+                            $('.second',this).hide(100);
+                        });
+                    }else if(lanrenzhijia ==1){
+                        $('.mainnav li').hover(function(){
+                            $('.second',this).css('bottom','40px').show(100);
+                        },function(){
+                            $('.second',this).hide(100);
+                        });
+                    }
+                });
+            </script>
+
+            <div id="page-container" style="margin-bottom: 40px;">
+                <div id="page-body">
+                    @RenderBody()
+                </div>
+            </div>
+            <div id="page-footer">
+                <div class="footer clearfix">
+                    <a href="" target="_blank" id="bblogo"><img src="~/Theme/160817_Layout/images/bbinlogo.png" border="0" width="70"></a>
+                    <a id="browser-logo" href="http://ub66.com" target="_blank"><img src="~/Theme/160817_Layout/images/ublogo.png" border="0" width="118"></a>
+                    <div class="footer-txt">
+                        <div class="article-menu">
+                            <a href="" target="mem_index" data-color="" class="js-article-color"> 关于我们 </a> ｜
+                            <a href="" target="mem_index" data-color="" class="js-article-color"> 联络我们 </a> ｜
+                            <a href="" target="mem_index" data-color="" class="js-article-color"> 合作伙伴 </a> ｜
+                            <a href="" target="mem_index" data-color="" class="js-article-color"> 存款帮助 </a> ｜
+                            <a href="" target="mem_index" data-color="" class="js-article-color"> 取款帮助 </a> ｜
+                            <a href="" target="mem_index" data-color="" class="js-article-color"> 常见问题 </a>
+                        </div>
+                        <div class="copyright">Copyright © 银河星城娱乐场官网 Reserved</div>
+                        <div class="footer-info"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="js-notice-pop" style="display:none;"> <img src="~/Theme/160817_Layout/images/147149025678.jpg"> </div>
+
+
+    <div id="ele-float-top-wrap" style="height: 0px;">
+        <div id="ele-float-top" style="display: block;">
+            <div id="ele-float-top-up" class="ele-float-top-btn"></div>
+        </div>
+    </div>
+
+    <!--bbin資訊站-->
+    <div class="bbininfo-wrap" style="right: -256px;">
+        <div class="btn-bbininfo bbin-downpic  bbin-jump">
+            <div id="bbininfo-btn-close" class="bbininfo-close"></div>
+            <a href="javascript:f_com.BBinGetPager('BBinInfo');" onclick="getGaEventTop(&#39;廣宣&#39;, &#39;右下角廣宣&#39;, &#39;BB資訊站&#39;);" class="bbininfo-box bbin-toppic bbininfo-slide-01 bbininfo-slide-active" style="display: block; position: static; bottom: 0px; left: 0px; z-index: 1;"></a>
+            <a href="" onclick="getGaEventTop(&#39;廣宣&#39;, &#39;右下角廣宣&#39;, &#39;報修系統&#39;);" target="_blank" class="bbininfo-box bbin-toppic bbininfo-slide-03" style="position: static; bottom: 0px; left: 0px; z-index: 1; display: none;"></a>
+            <!--主題百家樂-->
+        </div>
+    </div>
+    <script src="~/Theme/160817_Layout/js/jquery.easing.1.3.min.js"></script>
+
+    <script src="~/Theme/160817_Layout/js/saved_resource"></script>
+
+
+
+
+    <div id="js-ie-stop-alert-wrap" class="ie-stop-alert-wrap">
+        <div class="ie-stop-alert-bg">
+            <div class="ie-stop-alert-easing">
+                <div id="js-ie-stop-alert-container" class="ie-stop-alert-container clearfix">
+                    <div class="ie-stop-alert-container-title"> 系統偵測到您使用舊版瀏覽器! </div>
+                    <div class="clear"></div>
+                    <div class="ie-stop-alert-container-middle">
+                        <span class="ie-stop-alert-message ie-stop-alert-message-win7">
+                            系统侦测到您使用旧版浏览器，本站预计于 2016/4/1 停止对 IE9 IE10 维护与支援，<br>
+                            为加速浏览体验，提供最严密安全防护，建议升级至 IE11 或安装寰宇浏览器。
+                        </span>
+                        <span class="ie-stop-alert-message ie-stop-alert-message-xp">
+                            系统侦测到您使用旧版浏览器，本站预计于 2016/4/1 停止对 IE9 IE10 维护与支援，<br>
+                            为加速浏览体验，提供最严密安全防护，建议安装寰宇浏览器。
+                        </span>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="ie-stop-alert-btn-wrap">
+                    <div id="js-ie-stop-alert-btn-ie" class="ie-stop-alert-btn ie-stop-alert-btn-ie" onclick="window.open(&#39;http://windows.microsoft.com/en-us/internet-explorer/downloads/ie&#39;,&#39;download&#39;,&#39;top=0,left=0,width=1000,height=600,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no&#39;);"> IE 11 </div>
+                    <div class="ie-stop-alert-btn ie-stop-alert-btn-ub" onclick="window.open(&#39;http://ub66.com/?lang=zh-cn&#39;)"> 寰宇浏览器 </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="ele-adv" style="display: none;">
+
+        <div id="mBox" class="mBox zh-cn" style="display: block;">
+            <ul class="mBoxUl"></ul>
+            <div class="dv-colse"></div>
+        </div>
+    </div>
+
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','bbga');
+
+        (function() {
+            var trace_code = '';
+
+            switch ('3820086' % 10) {
+                case 1:
+                    trace_code = 'UA-77281412-1';
+                    break;
+                case 2:
+                    trace_code = 'UA-77281412-2';
+                    break;
+                case 3:
+                    trace_code = 'UA-77281412-3';
+                    break;
+                case 4:
+                    trace_code = 'UA-77281412-4';
+                    break;
+                case 5:
+                    trace_code = 'UA-77281412-5';
+                    break;
+                case 6:
+                    trace_code = 'UA-77281412-6';
+                    break;
+                case 7:
+                    trace_code = 'UA-77281412-7';
+                    break;
+                case 8:
+                    trace_code = 'UA-77281412-8';
+                    break;
+                case 9:
+                    trace_code = 'UA-77281412-9';
+                    break;
+                default:
+                    trace_code = 'UA-77281412-10';
+            }
+
+            bbga('create', 'UA-59062215-1', 'auto');
+            bbga('require', 'displayfeatures');
+            bbga('set', 'dimension1', 'sjs888');
+            bbga('send', 'pageview');
+
+            // bbga2016
+            bbga('create', trace_code, 'auto', {name: 'bbga2016'});
+            bbga('bbga2016.require', 'displayfeatures');
+            bbga('bbga2016.set', 'dimension1', 'sjs888');
+            bbga('bbga2016.send', 'pageview');
+        }());
+
+        /* 客端，加入我的最愛彈跳 */
+        function eleAddFavorite() {
+            if(document.all){
+                //ie8~10
+                window.external.AddFavorite('http://www.4311js.com', '金沙Sands娱乐场官网');
+            } else {
+                alert('「' + "您使用的浏览器不支援此功能，请按“Ctrl+D”键手动加入收藏。" + '」');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+<script src="/theme/neon/assets/js/gsap/main-gsap.js"></script>
+<script src="/theme/neon/assets/js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js"></script>
+<script src="/theme/neon/assets/js/bootstrap.js"></script>
+<script src="/theme/neon/assets/js/joinable.js"></script>
+<script src="/theme/neon/assets/js/resizeable.js"></script>
+<script src="/theme/neon/assets/js/morris.min.js"></script>
+<script src="/theme/neon/assets/js/toastr.js"></script>
+<script src="/theme/neon/assets/js/neon-custom.js"></script>
+<script src="/theme/neon/assets/js/neon-demo.js"></script>
+<script src="/theme/neon/assets/js/neon-api.js"></script>
+
+<link rel="stylesheet" href="/theme/neon/assets/js/daterangepicker/daterangepicker-bs3.css">
+<script src="/theme/neon/assets/js/daterangepicker/moment.min.js"></script>
+<script src="/theme/neon/assets/js/daterangepicker/daterangepicker.js"></script>
+<script src="/theme/neon/assets/js/bootstrap-datepicker.js"></script>
+<script src="/theme/neon/assets/js/bootstrap-timepicker.min.js"></script>
+<script src="~/Theme/bootbox.min.js"></script>
+<script src="/Scripts/jn.js"></script>
+
+
+
+
+
+
+
+
+
+

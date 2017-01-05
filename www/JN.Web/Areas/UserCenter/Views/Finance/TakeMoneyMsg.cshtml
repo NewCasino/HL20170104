@@ -1,0 +1,152 @@
+﻿@model JN.Data.Investment
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<!-- page specific plugin styles -->
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+
+        <form class="form-horizontal margin-none" id="frmEdit" action="@(Url.Action("TakeMoney"))" method="post">
+
+            <input name="id" hidden="hidden" value="@ViewBag.id" />
+            <input name="type" hidden="hidden" value="@ViewBag.type" />
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@("提取类型"):</label>
+
+                <div class="col-xs-12 col-sm-9">
+                    <div class="clearfix">
+                        @{
+                            if (ViewBag.type == 1)
+                            {
+                                <span style="line-height:28px">@T("本金")</span>
+                            }
+                            else
+                            {
+                                <span style="line-height:28px">@T("利息")</span>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+            @{
+                if (ViewBag.type == 1)
+                {
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@("剩余本金"):</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="clearfix">
+                                <span style="line-height:28px">@Model.HaveMoney.ToString("F2")</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@("剩余利息"):</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="clearfix">
+                                <span style="line-height:28px">@Model.SettlementMoney.ToString("F2")</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankuser">@T("提取金额"):</label>
+
+                <div class="col-xs-12 col-sm-2">
+                    <div class="clearfix">
+                        <input type="text" name="Money" class="form-control" value="0" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@("系统提示"):</label>
+
+                <div class="col-xs-12 col-sm-9">
+                    <div class="clearfix">
+                        <span style="line-height:28px">@ViewBag.Msg</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr hr-dotted"></div>
+
+
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    @{
+                        if (ViewBag.type == 1)
+                        {
+                            <button type="submit" data-value="@ViewBag.id" class="btn btn-primary btn-purple">@T("确认")</button>
+                        }
+                        else if (ViewBag.type == 2)
+                        {
+                            <button type="submit" data-value="@ViewBag.id" class="btn btn-primary btn-purple">@T("确认")</button>
+                        }
+                    }
+                    &nbsp; &nbsp; &nbsp;
+                    <button class="btn" type="reset">
+                        <i class="icon-undo bigger-110"></i>
+                        @T("返回")
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('[data-rel=tooltip]').tooltip({ container: 'body' });
+        bootbox.setDefaults({ locale: "zh_CN" });
+
+    })
+    $(function () {
+
+        $(".tqlx").on("click", function () {
+            var id = $(this).attr("data-value");
+            bootbox.prompt('提取利息，请输入要提取的金额：', function (result) {
+                if (result)
+                    $.post('@(Url.Action("TakeMoney"))', { id: id, Money: result, type: 2 }, function (data) {
+                        if (data == 'ok') {
+                            alert("提取成功！");
+                            location.reload();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    });
+            });
+        });
+
+        $(".tqbj").on("click", function () {
+            var id = $(this).attr("data-value");
+            bootbox.prompt('提取本金，请输入要提取的金额：', function (result) {
+                if (result)
+                    $.post('@(Url.Action("TakeMoney"))', { id: id, Money: result, type: 1 }, function (data) {
+                        if (data == 'ok') {
+                            alert("提取成功！");
+                            location.reload();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    });
+            });
+        });
+    });
+</script>

@@ -1,0 +1,248 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model PagedList.PagedList<JN.Data.User>
+@{
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    Layout = "~/Areas/AdminCenter/Views/Shared/_Layout.cshtml";
+    decimal currentprice = JN.Services.Manager.CFB.getcurrentprice();
+}
+<!-- Content -->
+<div id="content">
+    <!-- Breadcrumb -->
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")" class="glyphicons home"><i></i> 首页</a></li>
+        <li class="divider"></li>
+        <li>@ViewBag.Title</li>
+    </ul>
+    <div class="separator bottom"></div>
+    <!-- // Breadcrumb END -->
+    <div class="innerLR">
+        <div class="filter-bar margin-bottom-none">
+            <form method="get">
+                <!-- Filter -->
+                <div>
+                    <select name="datefiled" style="width: 80px;">
+                        <option value="CreateTime" @(Request["datefiled"] == "CreateTime" ? "selected" : "")>创建时间</option>
+                        <option value="ActivationTime" @(Request["datefiled"] == "ActivationTime" ? "selected" : "")>激活时间</option>
+                    </select>
+                </div>
+                <div>
+                    <label>从:</label>
+                    <div class="input-append">
+                        <input type="text" name="dateform" class="input-mini datepicker" value="@Request["dateform"]" style="width: 63px;" />
+                        <span class="add-on glyphicons calendar"><i></i></span>
+                    </div>
+                </div>
+                <!-- // Filter END -->
+                <!-- Filter -->
+                <div>
+                    <label>到:</label>
+                    <div class="input-append">
+                        <input type="text" name="dateto" class="input-mini datepicker" value="@Request["dateto"]" style="width: 63px;" />
+                        <span class="add-on glyphicons calendar"><i></i></span>
+                    </div>
+                </div>
+                <!-- // Filter END -->
+                <!-- Filter -->
+                <div style="margin-left:10px">
+                    <select name="numberfiled" style="width: 80px;">
+                        <option value="Wallet2004" @(Request["numberfiled"] == "Wallet2004" ? "selected" : "")>股权</option>
+                        <option value="BounsPeriod" @(Request["numberfiled"] == "BounsPeriod" ? "selected" : "")>拆分次数</option>
+                    </select>
+                </div>
+                <div>
+                    <label>从:</label>
+                    <div class="input-append">
+                        <input type="text" name="numberform" class="input-mini" style="width: 30px;" value="@Request["numberform"]" />
+                        <span class="add-on glyphicons euro"><i></i></span>
+                    </div>
+                </div>
+                <!-- // Filter END -->
+                <!-- Filter -->
+                <div>
+                    <label>至:</label>
+                    <div class="input-append">
+                        <input type="text" name="numberto" class="input-mini" style="width: 30px;" value="@Request["numberto"]" />
+                        <span class="add-on glyphicons euro"><i></i></span>
+                    </div>
+                </div>
+                <!-- // Filter END -->
+                <!-- Filter -->
+                <div style="margin-left:10px">
+                    <select name="keyfiled" style="width: 80px;">
+                        <option value="UserName" @(Request["keyfiled"] == "UserName" ? "selected" : "")>用户名</option>
+                        <option value="Mobile" @(Request["keyfiled"] == "Mobile" ? "selected" : "")>手机</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="input-append">
+                        <input type="text" name="keyword" class="input-mini" style="width: 150px;" value="@Request["keyword"]" placeholder="请输入查询关键词" />
+                        <span style="margin: 0;" class="btn-action single glyphicons circle_question_mark" data-toggle="tooltip" data-placement="top" data-original-title="使用模糊查询可在关键字前后加上“%”"><i></i></span>
+                    </div>
+                </div>
+                <!-- // Filter END -->
+                <!-- Filter -->
+                <div>
+                    <input type="hidden" name="isactivation" value="@Request["isactivation"]" />
+                    <input type="hidden" name="IsAsc" value="0" />
+                    <input type="hidden" name="OrderFiled" value="@Request["OrderFiled"]" />
+                    <input type="hidden" name="IsExport" value="0" />
+                    <input type="submit" onclick="$('input[name=\'IsExport\']').val(0)" value="查询" />
+                    @*<input type="submit" onclick="$('input[name=\'IsExport\']').val(1)" value="导出" />*@
+                </div>
+                <div class="clearfix"></div>
+                <!-- // Filter END -->
+
+            </form>
+        </div>
+
+        <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="center">
+                        <label>
+                            <input type="checkbox" class="ace" />
+                            <span class="lbl"></span>
+                        </label>
+                    </th>
+                    <th>会员编号</th>
+                    <th>手机号码</th>
+                    <th>级别</th>
+                    <th>@(cacheSysParam.SingleAndInit(x => x.ID == 2002).Value)余额</th>
+                    <th><a href="?OrderFiled=Wallet2004">@(cacheSysParam.SingleAndInit(x => x.ID == 2004).Value)余额</a></th>
+                    <th>待解冻数量</th>
+                    <th><a href="?OrderFiled=BounsPeriod">拆分次数</a></th>
+                    <th><a href="?OrderFiled=Addup1106">累计买入</a></th>
+                    <th><a href="?OrderFiled=Addup1107">累计兑出</th>
+                    <th>兑出记录</th>
+                    <th>当前价格</th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count > 0)
+                {
+                    for (int i = 0; i < Model.Count; i++)
+                    {
+                        int uid = Model[i].ID;
+                        <tr>
+                            <td class="center text-muted">
+                                <label>
+                                    <input type="checkbox" class="ace" name="ckid" value="@Model[i].ID" />
+                                    <span class="lbl"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <a href="/User/Home?adminloginname=@Model[i].UserName" target="_blank">@Model[i].UserName</a>
+                            </td>
+                            <td>
+                                @Model[i].Mobile
+                            </td>
+               
+                                <td>
+                                    @Model[i].Investment.ToString("F0")
+                                </td>
+                  
+                            <td>@Model[i].Wallet2002.ToString("F2")</td>
+                            <td>@Model[i].Wallet2004.ToString("F2")</td>
+                            @{ 
+                                var mysubs = MvcCore.Unity.Get<JN.Data.Service.ICFBSubscribeService>().List(x => x.UID == uid);
+                            }
+                            <td>@((mysubs.Count() > 0 ? mysubs.Sum(x => x.SubscribeNumber - (x.CanBeUsed ?? 0)) : 0).ToString("F2"))
+                            </td>
+                            <td>@Model[i].BounsPeriod</td>
+    <td>@Model[i].Addup1106</td>
+   <td>@Model[i].Addup1107</td>
+    <td>
+        <table class="table table-striped table-bordered no-margin-bottom" style="margin-bottom:5px">
+            @{
+                var mysells = MvcCore.Unity.Get<JN.Data.Service.IWalletLogService>().List(x => x.UID == uid && x.CoinID == 2004 && x.Description.Contains("卖出")).OrderByDescending(x => x.CreateTime);
+                foreach (var item in mysells)
+                {
+                    <tr  class="@(item.Description.Contains("系统") ? "red" : "")">
+                        <td style="padding: 2px 2px;">@item.CreateTime.ToString("MM-dd HH:mm:ss")</td>
+                        <td style="padding: 2px 2px;">@item.ChangeMoney.ToString("F2")</td>
+                        <td style="padding: 2px 2px;">@item.Description</td>
+                    </tr>
+                }
+            }
+        </table>
+    </td>
+                            <td>@currentprice</td>
+                            <td>
+                            @if (Model[i].Wallet2004 > 0)
+                            {
+                            <a data-value="@Model[i].ID" class="btn sell">
+   强制卖出
+</a>
+                            }
+                            </td>
+                        </tr>
+
+                    }
+                }
+            </tbody>
+        </table>
+
+    <!-- Options -->
+    <div class="separator top form-inline small">
+        <div class="pull-left checkboxs_actions ">
+            <button id="multisell" class="btn btn-primary">批量强制卖出</button>
+        </div>
+        <!-- Pagination -->
+        @Html.PagedListPager((IPagedList)Model, page => Url.Action(ViewContext.RouteData.Values["action"].ToString(),
+                       JN.Services.Tool.StringHelp.GetQueryString(HttpUtility.ParseQueryString(Request.Url.Query), page)), new PagedListRenderOptions() { ContainerDivClasses = new string[] { "pagination pagination-small pull-right" } })
+        <div class="clearfix"></div>
+        <!-- // Pagination END -->
+
+    </div>
+    <!-- // Options END -->
+
+</div>
+    </div>
+<!-- PAGE CONTENT ENDS -->
+@section scripts{
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $('[data-rel=tooltip]').tooltip({ container: 'body' });
+            $('table th input:checkbox').on('click', function () {
+                var that = this;
+                $(this).closest('table').find('tr > td:first-child input:checkbox')
+                .each(function () {
+                    this.checked = that.checked;
+                    $(this).closest('tr').toggleClass('selected');
+                });
+            });
+        })
+        $(".sell").on("click", function () {
+            var id = $(this).attr("data-value");
+            bootbox.confirm('是否要强制卖该会员持股比例的@(cacheSysParam.SingleAndInit(x => x.ID == 2402).Value2.ToDecimal() * 100)%吗?', function (result) {
+                if (result) {
+                    $.post('@(Url.Action("Sell"))', { id: id }, function (data) {
+                        if (data == 'ok') {
+                            location.reload();
+                        }
+                        else
+                            alert('错误的参数');
+                    });
+                }
+            });
+        });
+        $('#multisell').on('click', function (e) {
+            var ids = "";
+            $("input[name='ckid']").each(function () {
+                if (this.checked == true) {
+                    ids += "," + $(this).val();
+                }
+            });
+            bootbox.confirm('是否要强制卖该批会员持股比例的@(cacheSysParam.SingleAndInit(x => x.ID == 2402).Value2.ToDecimal() * 100)%吗?', function (result) {
+                if (result) {
+                    $.post("@(Url.Action("MultiSell"))", { ids: ids }, function (data) {
+                        if (data == "ok") location.reload();
+                    });
+                }
+            });
+        });
+    </script>
+}

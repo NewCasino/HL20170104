@@ -1,0 +1,30 @@
+﻿@{
+    var lst2 = MvcCore.Unity.Get<JN.Data.Service.IStockTradeService>().List().Take(13).OrderByDescending(x => x.ID).ToList();
+    if (lst2.Count > 0)
+    {
+        decimal openprice = 0;
+        var chart = MvcCore.Unity.Get<JN.Data.Service.IStockChartDayService>().List().OrderByDescending(x => x.StockDate).ToList().FirstOrDefault();
+        if (chart != null)
+        {
+            openprice = chart.OpenPrice;
+        }
+        foreach (var item in lst2)
+        {
+            string bc = item.Direction == 1 ? "sell" : "buy";
+            <tr>
+                <td width="25%" style="color:#888">@item.CreateTime.ToString("HH:mm:ss")</td>
+                <td width="25%" align="right" style="color:@(item.Price > openprice ? "#f00" : "#0f0")">@item.Price.ToString("F4")</td>
+                <td width="25%">&nbsp;</td>
+                <td width="25%" align="right" style="color:#ffff00">@(item.Quantiry.ToString("F4"))</td>
+            </tr>
+
+
+            @*<tr>
+                <td class="@bc"></td>
+                <td class="@bc"></td>
+                <td class="@bc"></td>
+            </tr>*@
+        }
+    }
+    @*<tr><td style="text-align:center" colspan="3"><a href="/home/ttc">更多交易信息</a>&nbsp;&nbsp;</td></tr>*@
+}

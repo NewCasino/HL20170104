@@ -1,0 +1,385 @@
+﻿@model JN.Data.User
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<!-- page specific plugin styles -->
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+
+        @*<form class="form-horizontal margin-none" id="frmEdit" method="post">*@
+@using (Ajax.BeginForm("Modify", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "saveForm", @class = "form-horizontal" }))
+        {
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@T(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().Single(x => x.ID == 2001).Name):</label>
+
+                <div class="col-xs-12 col-sm-9">
+                    <div class="clearfix">
+                        <span style="line-height:28px">@Model.Wallet2001.ToString("F2")</span>
+                    </div>
+                </div>
+            </div>
+            @*<div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@T(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().Single(x => x.ID == 2002).Name):</label>
+
+                <div class="col-xs-12 col-sm-9">
+                    <div class="clearfix">
+                        <span style="line-height:28px">@Model.Wallet2002.ToString("F2")</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@T(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().Single(x => x.ID == 2003).Name):</label>
+
+                <div class="col-xs-12 col-sm-9">
+                    <div class="clearfix">
+                        <span style="line-height:28px">@Model.Wallet2003.ToString("F2")</span>
+                    </div>
+                </div>
+            </div>*@
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="username">@T("用户名"):</label>
+
+                <div class="col-xs-12 col-sm-9">
+                    <div class="clearfix">
+                        <input type="hidden" name="id" value="@Model.ID" /><span style="line-height:28px">@Model.UserName</span>
+                    </div>
+                </div>
+            </div>
+
+            if (Model.FristApplyInvestment == null)
+            {
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankuser">@T("注册类型"):</label>
+
+                    <div class="col-xs-12 col-sm-5">
+                        <div class="clearfix">
+
+                            @Html.DropDownList("FristApplyInvestment", new SelectList(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 1000 && x.IsUse).OrderBy(x => x.Sort).ToList(), "Value", "Name"))
+                            @*, "--请选择--", new { @class = "form-control" }*@
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @*<div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="nickname">昵称:</label>
+
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <input type="text" name="nickname" class="form-control" value="@Model.NickName" />
+                        </div>
+                    </div>
+                </div>*@
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="realname">@T("真实姓名"):</label>
+
+                        <div class="col-xs-12 col-sm-2">
+                            @Model.RealName
+                        </div>
+                    </div>*@
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right">@T("性别")</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div>
+                                <label class="blue">
+                                    <input name="gender" value="男" @(Model.Sex == "男"? "checked" : "") type="radio" class="ace" />
+                                    <span class="lbl"> @T("男")</span>
+                                </label>
+                                <label class="blue">
+                                    <input name="gender" value="女" @(Model.Sex == "女" ? "checked" : "") type="radio" class="ace" />
+                                    <span class="lbl"> @T("女")</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>*@
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right">@T("所属报单中心"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            @Model.AgentUser
+                        </div>
+                    </div>*@
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("手机号码"):</label>
+
+                    <div class="col-xs-12 col-sm-3">
+                        @Model.Mobile
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="tel">@T("电话"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="clearfix">
+                                <input type="tel" name="tel" class="form-control" value="@Model.Tel" />
+                            </div>
+                        </div>
+                    </div>*@
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">@T("邮箱"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+
+                                <input type="email" name="email" class="form-control" value="@Model.Email" />
+                            </div>
+                        </div>
+                    </div>*@
+
+                @*<div class="hr hr-dotted"></div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="idcard">@T("身份证号码"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="clearfix">
+                                <input type="text" name="idcard" class="form-control" value="@Model.IDCard" readonly/>
+                            </div>
+                        </div>
+                    </div>*@
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="url">所在地区:</label>
+
+                        <div class="col-xs-12 col-sm-6" id="area">
+                            <select id="province" name="province"></select>
+                            <select id="city" name="city"></select>
+                            <select id="county" name="county"></select>
+                        </div>
+                    </div>*@
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="address">@T("收货地址"):</label>
+
+                        <div class="col-xs-12 col-sm-5">
+                            <div class="clearfix">
+                                <input type="text" name="address" class="form-control" value="@Model.Address" />
+                            </div>
+                        </div>
+                    </div>*@
+
+                @*<div class="form-group" style="display:">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="qq">@T("微信号"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="clearfix">
+                                <input type="text" name="qq" class="form-control" value="@Model.QQ" />
+                            </div>
+                        </div>
+                    </div>*@
+
+                @*<div class="hr hr-dotted"></div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="question">@T("密保问题"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="clearfix">
+                                <input type="text" name="question" class="form-control" value="@Model.Question" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="answer">@T("密保答案"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="clearfix">
+                                <input type="text" name="answer" class="form-control" value="@Model.Answer" />
+                            </div>
+                        </div>
+                    </div>*@
+
+                <div class="hr hr-dotted"></div>
+                @*<div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankuser">@T("支付宝帐号"):</label>
+
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <input type="text" name="alipay" class="form-control" value="@Model.AliPay" @(ViewBag.ChangeStatus == 1 ? "readonly" : "") />
+                        </div>
+                    </div>
+                </div>*@
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankname">@T("银行卡发卡行"):</label>
+
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="clearfix">
+                            <input type="text" name="bankname" class="form-control" value="@Model.BankName" @(ViewBag.ChangeStatus == 1 ? "readonly" : "") />
+
+                            @*@Html.DropDownList("bankname", new SelectList(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 5000 && x.IsUse).OrderBy(x => x.Sort).ToList(), "Name", "Value", Model.BankName))*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankcard">@T("银行卡号"):</label>
+
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="clearfix">
+                            <input type="text" name="bankcard" class="form-control" value="@Model.BankCard" @(ViewBag.ChangeStatus == 1 ? "readonly" : "") />
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankofdeposit">@T("开户行"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="clearfix">
+                                <input type="text" name="bankofdeposit" class="form-control" value="@Model.BankOfDeposit" />
+                            </div>
+                        </div>
+                    </div>*@
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankuser">@T("银行卡户名"):</label>
+
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <input type="text" name="bankuser" class="form-control" value="@Model.BankUser" @(ViewBag.ChangeStatus == 1 ? "readonly" : "") />
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="tel">@T("手机验证码"):</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="input-group">
+                                <input type="text" name="smscode" class="form-control" style="width:100px" /><span class="input-group-btn"><button id="regBtn" class="btn btn-primary" name="yt0" onclick="SendCode()" type="button">获取短信验证码</button></span>
+                                @*<button id="regBtn2" class="btn btn-primary" name="yt1" onclick="SendVoiceCode()" type="button">获取语音验证码</button>
+                            </div>
+                        </div>
+                    </div>*@
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankuser">@T("二级密码"):</label>
+
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <input type="password" name="vierypassword" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hr hr-dotted"></div>
+
+                <div class="clearfix form-actions">
+                    <div class="col-md-offset-3 col-md-9">
+                        <button type="submit" class="btn btn-primary btn-sm" id="btnEdit">更新</button>
+
+                        &nbsp; &nbsp; &nbsp;
+                        <button class="btn" type="reset">
+                            <i class="icon-undo bigger-110"></i>
+                            @T("返回")
+                        </button>
+                    </div>
+                </div>
+            @*</form>*@
+}
+
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+    <!-- page specific plugin scripts -->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script src="/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/js/jquery.form.js"></script>
+    <script type="text/javascript">
+        function afterPost(data) {
+            if (data.Status == 200) {
+                alert("@(T("修改成功，即将为您返回当前页！"))");
+                location.href = "@(Url.Action("Modify"))";
+            } else {
+                alert("@(T("修改失败"))：" + data.Message);
+            }
+        }
+        @*$("#btnEdit").click(function () {
+            $("#frmEdit").ajaxSubmit({
+                url: "@Url.Action("Modify")",
+                type: "post",
+                success: function (data) {
+                    if (data.Status == 200) {
+                        alert("@T("修改成功，即将为您返回当前页！")");
+                        location.href = "@(Url.Action("Modify"))";
+                    } else {
+                        alert("@T("修改失败：")" + data.Message);
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        });*@
+
+        function SendCode() {
+            var myphone = "@(Model.Mobile)";
+            $('#regBtn').attr("disabled", "disabled");
+            $('#regBtn').css('backgroundColor', '#999');
+            $('#regBtn').text('@T("发送中....")');
+            $.ajax({
+                type: "post",
+                url: "@(Url.Action("SendMobileMsm", "Reg"))",
+                data: { myphone: myphone },
+                success: function (data) {
+                    if (data.Status == 200) {
+                        $('#regBtn').text('@T("发送验证码")');
+                        alert("@T("发送成功，请注意查收验证码!")");
+                    } else {
+                        $('#regBtn').removeAttr("disabled");
+                        $('#regBtn').css('backgroundColor', '#e98a00');
+                        $('#regBtn').text('@T("发送验证码")');
+                        alert(data.Message);
+                    }
+                },
+                error: function () {
+                    $('#regBtn').removeAttr("disabled");
+                    $('#regBtn').css('backgroundColor', '#e98a00');
+                    $('#regBtn').text('@T("发送验证码")');
+                    alert("@T("发送失败，请稍后再试!")");
+                }
+            });
+        }
+
+        function SendVoiceCode() {
+            var myphone = "@(Model.Mobile)";
+            $('#regBtn2').attr("disabled", "disabled");
+            $('#regBtn2').css('backgroundColor', '#999');
+            $('#regBtn2').text('@T("发送中....")');
+            $.ajax({
+                type: "post",
+                url: "@(Url.Action("SendMobileVoice", "Reg"))",
+                data: { myphone: myphone },
+                success: function (data) {
+                    if (data.Status == 200) {
+                        $('#regBtn2').text('@T("发送语音通话")');
+                        alert("@T("发送成功，请注意接听语音电话!")");
+                    } else {
+                        $('#regBtn2').removeAttr("disabled");
+                        $('#regBtn2').css('backgroundColor', '#e98a00');
+                        $('#regBtn2').text('@T("发送语音通话")');
+                        alert(data.Message);
+                    }
+                },
+                error: function () {
+                    $('#regBtn2').removeAttr("disabled");
+                    $('#regBtn2').css('backgroundColor', '#e98a00');
+                    $('#regBtn2').text('@T("发送语音通话")');
+                    alert("@T("发送失败，请稍后再试!")");
+                }
+            });
+        }
+    </script>

@@ -1,0 +1,114 @@
+﻿@{
+    Layout = null;
+}
+
+<!-- saved from url=(0021)http://www.smbep.com/ -->
+<html lang="en" class="no-js">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>@(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName) | Login</title>
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/Theme/160817_login2/css/reset.css">
+    <link rel="stylesheet" href="~/Theme/160817_login2/css/supersized.css">
+    <link rel="stylesheet" href="~/Theme/160817_login2/css/style_login.css">
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <div style="height:260px;"></div>
+
+    <div class="page-container">
+        @*<div class="header-logo">
+                <div class="logo_g">
+                    <a class="circle"></a>
+                    <span></span>
+                </div>
+                <div class="logo_text"></div>
+            </div>*@
+        <div>
+            <img src="~/Theme/102001/images/20160722110520732073.png" />
+
+        </div>
+        <br />
+        <form name="LoginForm" id="LoginForm" action="" method="POST">
+            <ul>
+                <li>
+                    <p>会员账户：</p>
+                    <input type="hidden" name="lang" value="zh-CN">
+                    <input type="text" name="username" class="username" placeholder="请输入您的用户名！">
+                </li>
+                <li>
+                    <p>会员密码：</p>
+                    <input id="txtPassword" type="Password" name="password" class="password" placeholder="请输入您的用户密码！">
+                </li>
+                @*<li>
+                        <p>验 证 码：</p>
+                        <input type="Captcha" name="verifycode" class="Captcha" placeholder="输入验证码！">
+                        <img style="width: 80px;height: 42px; padding: 0 15px;" onclick="this.src=&#39;ashx/GenVerifyImage.ashx??rand=&#39;+Math.random()" src="images/GenVerifyImage.ashx">
+                    </li>*@
+                <li>
+                    <button type="button" id="btn_cn" class="submit_button"> 登录</button>
+                </li>
+                @*<div class="error"> <span></span></div>*@
+            </ul>
+        </form>
+        <div style="padding-top:10px;">
+            <a href="javascript://" onclick="Go_forget_pwd();" class="STYLE2">
+                忘记密码
+            </a>
+            <a href="javascript://" onclick="GoTo_REG();" class="STYLE2">
+                注册会员
+            </a>
+             @*&nbsp;&nbsp;<strong>&nbsp;</strong><a href="" class="STYLE2">免费注册</a><br>*@
+            <span style="color:#ccc;"></span>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="/theme/neon/assets/js/bootstrap.js"></script>
+@*<script src="/theme/neon/assets/js/neon-api.js"></script>*@
+<script src="~/js/jquery.form.js"></script>
+<script type="text/javascript">
+    function GoTo_REG() {
+        window.location.href = "/UserCenter/REG";
+    }
+
+
+
+    function Go_forget_pwd() {
+        window.location.href = "/UserCenter/Login/GetPwd";
+    }
+
+    $("#btn_cn").click(function () {
+        $("#LoginForm").ajaxSubmit({
+            url: "@Url.Action("Index")",
+            type: "post",
+            success: function (data) {
+                if (data.Status == 200) {
+                    alert("登录成功，即将为您跳转！");
+                    location.href = data.Message;
+                }
+                else if (data.Status == 208) {
+                    alert("登录成功，账号没有激活，请联系推荐人激活！");
+                    location.href = data.Message;
+                }
+                else {
+                    //ChangeCheckCode();
+                    alert("登录失败：" + data.Message);
+                }
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    });
+</script>

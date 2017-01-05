@@ -1,0 +1,40 @@
+﻿
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<h3 style="text-align:center">投资成为会员</h3>
+
+
+
+@using (Ajax.BeginForm("getInvestmentWallet", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "saveForm", @class = "form-horizontal" }))
+{
+<div style="text-align:center">
+
+ <br />
+    <br />
+    <br />
+    <p>
+        <span>投资金额;</span>
+        <input type="text"  name="investmentNum" />
+        <input type="submit" value="投资" style="width:50px;background-color:#0094ff" />
+    </p>
+    <br />
+    <p>----------------------------------------------------------------------------------------------</p>
+    <p>注册级别</p>
+
+    <p>一星会员：100,二星会员：500，三星会员：1000，四星会员：2000，五星会员：5000</p>
+    <p>----------------------------------------------------------------------------------------------</p>
+</div> 
+}
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript">
+    function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@(T("投资成功！"))!");//////////////
+            location.href = "@(Url.Action("index"))";
+        } else {
+            alert("@(T("投资失败！"))：" + data.Message);////////////
+        }
+    }
+
+</script>

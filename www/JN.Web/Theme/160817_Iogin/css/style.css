@@ -1,0 +1,740 @@
+@charset "utf-8";
+/* CSS Document */
+
+.btn-login {
+	background: url('../images/btn_login.png') no-repeat;
+}
+
+.btn-login.btn-login-o{
+	background: url('../images/btn_login_o.png') no-repeat;
+}
+/*banner-wrap*/
+.banner-wrap {
+	background: url('../images/title_welcome.jpg') #000 center top no-repeat;
+}
+.ball .banner-wrap {
+	background: url('../images/title_sports.jpg') #000 center top no-repeat;
+}
+.livetop .banner-wrap {
+	background: url('../images/title_live.jpg') #000 center top no-repeat;
+}
+.ltlottery .banner-wrap {
+	background: url('../images/title_lottery.jpg') #000 center top no-repeat;
+}
+.memberexclusiveii .banner-wrap {
+	background: url('../images/title_memberexclusiveii.jpg') #000 center top no-repeat;
+}
+/*first*/
+.first-link-ball {
+	background: url('../images/container_btn_sport.png') no-repeat;
+}
+
+.ele-lang-group{
+                display: none;
+                position: absolute;
+                z-index: 100;
+                font-size: 12px;
+                border-radius: 0 0 5px 5px;
+                background-color: #FFFFFF;
+                border-right:1px solid #AEAEAD;
+                border-left:1px solid #AEAEAD;
+                border-bottom:1px solid #AEAEAD;
+            }
+            .ele-lang-group a{
+                height:22px;
+                line-height: 22px;
+                display: block;
+                text-indent: 5px;
+                text-decoration: none;
+                color: #000;
+            }
+
+            .ele-lang-current,
+            .ele-lang-group a:hover{
+                color: #000;
+                background-color: #EFEFEF;
+            }
+		
+
+    #ele-logo-wrap,
+    #ele-logo-img {
+        width: 337px;
+        height: 103px;
+        background-image: url('../images/logo.png');
+        background-repeat: no-repeat;
+        display: block;
+        cursor: pointer;
+    }
+    #ele-logo-wrap{ background-position: 100% 100%;}
+    #ele-logo-img { background-position: 0 0; }
+ 
+
+.ele-lang-wrap{
+    line-height: 20px;
+    width:80px;
+    position: relative;
+    top: 1px;
+    z-index: 10;
+    text-align: left;
+    border:1px solid #AEAEAD;
+        background: url('../images/lang_arrow_down.jpg') right 1px no-repeat #FFF;
+}
+.ele-lang-title{
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+    padding-right: 15px;
+    text-indent: 5px;
+    color: #000;
+}
+
+
+.ele-msg-cp{cursor: pointer;}
+
+
+.ele-firstgame { position: relative; }
+    .ele-firstgame-1 {
+        width: 250px;
+        height: 348px;
+        float:left;
+        _display:inline;
+        position: relative;
+        overflow: hidden;
+        background: url(../images/147021591291.png) -250px bottom no-repeat;
+            }
+    .ele-firstgame-1 span {
+        width: 250px;
+        height: 348px;
+        background: url(../images/147021590579.png) left top no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor:pointer;
+    }
+    .ele-firstgame-2 {
+        width: 250px;
+        height: 348px;
+        float:left;
+        _display:inline;
+        position: relative;
+        overflow: hidden;
+                    background: url(../images/147021596852.png) -250px bottom no-repeat;
+            }
+    .ele-firstgame-2 span {
+        width: 250px;
+        height: 348px;
+        background: url(../images/147021595807.png) left top no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor:pointer;
+    }
+    .ele-firstgame-3 {
+        width: 250px;
+        height: 348px;
+        float:left;
+        _display:inline;
+        position: relative;
+        overflow: hidden;
+        background: url(../images/147021078411.png) -250px bottom no-repeat;
+            }
+    .ele-firstgame-3 span {
+        width: 250px;
+        height: 348px;
+        background: url(../images/147021077768.png) left top no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor:pointer;
+    }
+    .ele-firstgame-4 {
+        width: 250px;
+        height: 348px;
+        float:left;
+        _display:inline;
+        position: relative;
+        overflow: hidden;
+        background: url(../images/147021605262.png) -250px bottom no-repeat;
+            }
+    .ele-firstgame-4 span {
+        width: 250px;
+        height: 348px;
+        background: url(../images/147021604495.png) left top no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor:pointer;
+    }
+
+
+/*float menu*/
+.float-wrap .float-content {
+    overflow: hidden;
+}
+
+/*客服*/
+#float-right-wrap {
+    position: fixed;
+    overflow: hidden;
+    top: 173px;
+    right: -130px;
+    height: 319px;
+    padding-left: 36px;
+    width: 130px;
+	display:none;
+}
+#float-right-wrap .float-btn-right {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    background: url('../images/float_service02.png') center top no-repeat;
+    height: 246px;
+    width: 36px;
+    cursor: pointer;
+}
+#float-right-wrap a,
+#float-right-wrap .float-phone,
+#float-right-wrap .float-close {
+    width: 130px;
+}
+#float-right-wrap a {
+    display: block;
+}
+#float-right-wrap .float-service,
+#float-right-wrap .float-qq {
+    height: 78px;
+}
+#float-right-wrap .float-phone,
+#float-right-wrap .float-promotions,
+#float-right-wrap .float-freetrial {
+    height: 48px;
+}
+#float-right-wrap .float-service {
+    background: url('../images/float_service.png') center top no-repeat;
+}
+#float-right-wrap .float-phone {
+    background: url('../images/float_tel.png') center top no-repeat;
+}
+#float-right-wrap .float-qq {
+    background: url('../images/float_qq.png') center top no-repeat;
+}
+#float-right-wrap .float-promotions {
+    background: url('../images/float_promotions.png') center top no-repeat;
+}
+#float-right-wrap .float-freetrial {
+    background: url('../images/float_freetrial.png') center top no-repeat;
+}
+#float-right-wrap .float-close {
+    background: url('../images/float_close.png') center top no-repeat;
+    height: 19px;
+    cursor: pointer;
+}
+
+
+#ele-float-top-wrap {
+    position: fixed;
+    right: 5px;
+    bottom: 51px;
+    min-width: 40px;
+    z-index: 20;
+}
+#ele-float-top{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 40px;
+    display: none;
+}
+.ele-float-top-btn {
+    margin-top: 2px;
+    display: block;
+    position: relative;
+    height: 40px;
+    border-radius: 3px;
+    transition: opacity 0.6s ease;
+    background-color: white;
+    background-position: 50% 0;
+    background-repeat: no-repeat;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=80);
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+    }
+#ele-float-top-up {
+    display: none;
+    cursor: pointer;
+    margin-top: -40px;
+    background-image: url('../images/float_top_up.png');
+            }
+.ele-float-top-btn:hover {
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+    filter: alpha(opacity=100);
+    opacity: 1;
+    background-position: 50% 100%;
+}
+.ele-float-top-code {
+    position: relative;
+    background-image: url('../images/float_top_code.png');
+            }
+.float-top-service {
+    background-image: url('../images/float_top_service.png');
+            }
+.float-top-qq {
+    background-image: url('../images/float_top_qq.png');
+            }
+/* 懸浮框 */
+.ele-float-box-wrap {
+    display: none;
+    position: absolute;
+    right: 40px;
+    bottom: 0;
+    padding-right: 10px;
+    width: 150px;
+}
+.ele-float-top-code-box {
+    height: 185px;
+    background: #FFF url() 50% 50% no-repeat;
+    border-radius: 3px;
+    }
+.ele-float-top-code-box:after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    bottom: 8px;
+    border: 8px solid transparent;
+    border-left: 8px solid #FFF;
+}
+.ele-float-top-code-box:before {
+    content: '';
+    position: absolute;
+    bottom: 18px;
+    display: block;
+    width: 100%;
+    line-height: 18px;
+    color: #000;
+    font-size: 14px;
+    font-family: arial;
+    text-align: center;
+}
+#ele-float-btn-vip.ele-float-top-code-box {
+    position: absolute;
+    bottom: -16px;
+    right: -1px;
+    width: 146px;
+    height: 300px;
+    background: url(../images/float_vip_bg.png);
+}
+.ele-float-vip-code {
+    margin: 65px 0 0 5px;
+    width: 130px;
+    height: 108px;
+    background-image: url(../images/?module=MCache&method=vip_qrcode&args=2);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+.ele-float-top-code-box#ele-float-btn-vip:after,
+.ele-float-top-code-box#ele-float-btn-vip:before { display: none; }
+
+/* BB視訊活動 */
+        .ele-float-top-btn.ad-bblottery {
+    cursor: pointer;
+    background-image: url(../images/ad-live-show-icon.png);
+    background-color: transparent;
+}
+.ad-bblottery-box-wrap {
+    display: block;
+    right: 40px;
+    width: 250px;
+    padding: 0;
+}
+.ad-bblottery-box {
+    width: 250px;
+    height: 40px;
+    background: url(../images/ad-live-show-pop.png);
+}
+
+/* BBin資訊站 */
+@keyframes hoverEff{
+    0%{transform: scale(1);}
+    50%{transform: scale(1.2);}
+    100%{transform: scale(1);}
+}
+@-webkit-keyframes hoverEff{
+    0%{transform: scale(1);}
+    50%{transform: scale(1.2);}
+    100%{transform: scale(1);}
+}
+
+.bbininfo-wrap {
+    position: fixed;
+    right:-256px;
+    bottom: 3px;
+    z-index: 999;
+	-moz-transition: all 1s;
+    -webkit-transition: all 1s;
+    -o-transition: all 1s;
+}
+
+.bbininfo-wrap:hover {
+    right:0px;
+}
+
+
+.btn-bbininfo {
+    display: block;
+    position: relative;
+    right: 0;
+}
+.bbin-toppic {
+    display: none;
+    width: 301px;
+    height: 48px;
+    cursor: pointer;
+    background: url(../images/BBIN_1.png) 0 0 no-repeat;
+}
+@keyframes bbinactive
+{
+0%   {margin-bottom: 0;}
+25%  {margin-bottom: 3px;}
+50%  {margin-bottom: 0;}
+75%  {margin-bottom: 3px;}
+100% {margin-bottom: 0;}
+}
+
+@-moz-keyframes bbinactive /* Firefox */
+{
+0%   {margin-bottom: 0;}
+25%  {margin-bottom: 3px;}
+50%  {margin-bottom: 0;}
+75%  {margin-bottom: 3px;}
+100% {margin-bottom: 0;}
+}
+
+@-webkit-keyframes bbinactive /* Safari 和 Chrome */
+{
+0%   {margin-bottom: 0;}
+25%  {margin-bottom: 3px;}
+50%  {margin-bottom: 0;}
+75%  {margin-bottom: 3px;}
+100% {margin-bottom: 0;}
+}
+
+@-o-keyframes bbinactive /* Opera */
+{
+0%   {margin-bottom: 0;}
+25%  {margin-bottom: 3px;}
+50%  {margin-bottom: 0;}
+75%  {margin-bottom: 3px;}
+100% {margin-bottom: 0;}
+}
+.bbin-jump .bbininfo-slide-active {
+    animation: bbinactive 1s;
+    -moz-animation: bbinactive 1s; /* Firefox */
+    -webkit-animation: bbinactive 1s;  /* Safari 和 Chrome */
+    -o-animation: bbinactive 1s;   /* Opera */
+}
+.bbininfo-slide-active {
+    display: block;
+}
+.bbininfo-slide-01 {
+    background: url(../images/BBIN_1.png) 0 0 no-repeat;
+}
+.bbininfo-slide-02 {
+    background: url(../images/theme_baccarat.png) 0 0 no-repeat;
+}
+.bbininfo-slide-03 {
+    background: url(../images/technicalsupport.png) 0 0 no-repeat;
+}
+.bbininfo-close {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 8px;
+    right: 4px;
+    z-index: 3;
+    cursor: pointer;
+    background: url(../images/bbin_close.png) 50% 50% no-repeat;
+}
+.bbininfo-close:hover {
+    animation: hoverEff .8s linear;
+    -webkit-animation: hoverEff .8s linear;
+}
+
+
+
+.ie-stop-alert-wrap
+	{display:none;
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:5000;
+	width:100%;
+	height:100%;
+	color:#FFF;
+	text-align:center;
+	font-size:12px;
+	font-family:"Microsoft YaHei","微软雅黑",arial;
+	background:url(../images/bg_ie_full.png) repeat center top
+	}
+	
+.zh-cn .ie-stop-alert-wrap{
+	font-family:"Microsoft YaHei","微软雅黑",arial
+	}
+
+.zh-tw .ie-stop-alert-wrap{
+	font-family:"Microsoft JhengHei","微軟正黑體",arial
+	}
+
+.ie-stop-alert-bg{
+	width:100%;height:100%;
+	background:url(../images/bg_ie_logo.png) no-repeat 50% 10%
+	}
+
+.ie-stop-alert-easing{
+	position:absolute;
+	top:30%;
+	left:50%;
+	text-align:center;
+	width:600px;
+	margin:0 0 0 -300px
+	}
+
+.ie-stop-alert-container-title{
+	color:#06BDF7;
+	font-size:30px
+	}
+
+.ie-stop-alert-container-middle{
+	line-height:30px;
+	color:#FFF;
+	font-size:16px;
+	margin:20px 0 50px
+	}
+
+.ie-stop-alert-message{display:none}
+
+.ie-stop-alert-btn-wrap{font-size:0}
+
+.ie-stop-alert-btn{
+	display:inline-block;
+	vertical-align:top;
+	cursor:pointer;width:256px;
+	height:115px;
+	color:#FFF;
+	font-size:12px;
+	text-align:left;
+	box-sizing:border-box;
+	padding:24px 14px 34px 95px
+	}
+
+.ie-stop-alert-btn:hover{
+	background-position:
+	left bottom
+	}
+
+.ie-stop-alert-btn-ie{
+	display:none;
+	font-size:34px;
+	font-family:arial;
+	background:url(../images/btn_IE.png) no-repeat left top;
+	padding:19px 14px 34px 108px
+	}
+
+.ie-stop-alert-btn-ub{
+	font-size:25px;
+	background:url(../images/btn_UB.png) no-repeat left top
+	}
+
+.en .ie-stop-alert-btn-ub,
+.vi .ie-stop-alert-btn-ub,
+.ko .ie-stop-alert-btn-ub,
+.es .ie-stop-alert-btn-ub,
+.id .ie-stop-alert-btn-ub{
+	padding:9px 14px 34px 95px
+	}
+
+
+
+#ele-adv{
+	position:fixed;
+	bottom:0;
+	left:0;z-index:1000
+	}
+
+.mBox{
+	position:relative;
+	overflow:hidden;
+	display:none;
+	width:280px;
+	height:280px
+	}
+
+.mBoxUl{
+	list-style:none;
+	position:absolute;
+	width:100%;
+	height:100%;
+	padding:0
+	}
+
+.mBoxUl li{
+	width:280px;
+	height:100%;
+	position:absolute;
+	opacity:0;
+	display:none;
+	font-family:serif
+	}
+
+.th .mBoxUl li{
+	font-family:"Microsoft YaHei","SimSun",serif,Arial
+	}
+
+.mBox ul.playerControl{
+	margin:0;
+	padding:0;
+	list-style:none;
+	position:absolute;
+	bottom:3px;
+	height:14px;
+	z-index:1100
+	}
+
+.mBox ul.playerControl li{
+	float:left;
+	width:20px;
+	height:20px;
+	cursor:pointer;
+	margin:0 1px;
+	background:url(../images/icon02.png) left top no-repeat
+	}
+
+.mBox ul.playerControl li.adcurrent{
+	background-position:left bottom
+	}
+
+.dv-colse{
+	background:url(../images/icon01.png) no-repeat;
+	height:26px;
+	width:26px;
+	position:absolute;
+	top:8px;
+	left:5px;
+	cursor:pointer;
+	display:none;
+	z-index:1100
+	}
+	
+/******新增廣宣的class需添加在此******/
+/*競咪廳主題百家樂*/
+.mbox-milive{
+    display: block;
+    width: 280px;
+    height: 280px;
+    background: url('../images/zh-cn/ad_mi.png') 0 0 no-repeat;
+}
+.mbox-milive:hover{
+    background: url('../images/ad_mi_hover.png') 0 0 no-repeat;
+}
+/*GD 視訊*/
+.mbox-gdlive {
+    display: block;
+    background: url('../images/gd_mobile.png') 0 0 no-repeat;
+    width: 280px;
+    height: 280px;
+}
+.mbox-gdlive:hover {
+    background: url('../images/gd_mobile_hover.png') 0 0 no-repeat;
+}
+/*SA 視訊*/
+.mbox-salive{
+    display: block;
+    width: 280px;
+    height: 280px;
+    background: url('../images/ad_sa.png') 0 0 no-repeat;
+}
+/*端午節慶*/
+.mbox-dragon {
+    display: block;
+    width: 280px;
+    height: 280px;
+        background: url('../images/dragon.png') 0 0 no-repeat;
+    }
+/*耶誕節慶廣宣*/
+.mbox-christ {
+    display: block;
+    width: 280px;
+    height: 280px;
+    background: url(../images/christmas.png) 0 0 no-repeat;
+    }
+/*農曆新年慶廣宣*/
+.mbox-newyear {
+    display: block;
+    width: 280px;
+    height: 280px;
+    background: url(../images/newyear.png) 0 0 no-repeat;
+    }
+/* BBIN GAME ZONE廣宣 */
+.bbin-game-zone {
+    display: block;
+    width: 280px;
+    height: 280px;
+    background: url('../images/bbinGameZoneAD.png') 0 0 no-repeat;
+}
+/*GNS 電子*/
+.ad-gns {
+    display: block;
+    width: 280px;
+    height: 280px;
+    background: url('../images/ad_gns.png') 0 0 no-repeat;
+}
+
+
+
+        #upupMessage{
+            position:absolute;
+            bottom:20px;
+            right:20px;
+            text-align:center;
+            width:400px;
+            min-height: 137px;
+            z-index:9999;
+            background-color: #F3F3F3;
+            border: solid 2px #3A3A47;
+            box-sizing: border-box;
+            display:none
+        }
+        .upup_header {
+            height: 40px;
+            line-height: 40px;
+            color: #FFF;
+            font-size: 17px;
+            font-weight: bold;
+            background:url(../images/titlebg_repeat_x.png?v=0) repeat-x;
+        }
+        .title {
+            float: left;
+            background:url(../images/icon_announcement.png?v=0) no-repeat 12px center;
+            padding-left: 42px;
+        }
+        #upupMessage .close_ad{
+            float: right;
+            height:14px;
+            width:14px;
+            cursor:pointer;
+            background:url(../images/btn_close.png?v=0) no-repeat;
+            margin: 13px 10px 0 0;
+        }
+        #upupMessage .close_ad:hover {
+            background-position: left bottom;
+        }
+        #upupContent{
+            min-height: 40px;
+            line-height: 22px;
+            color:#000;
+            font-size: 13px; 
+            background-color: #F3F3F3;
+            overflow: hidden;
+            padding: 20px 40px; 
+        }
+        
+	

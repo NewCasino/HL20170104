@@ -1,0 +1,468 @@
+.mt20{ margin-top:20px;}
+.box{
+  border: 1px solid #b4cef8;
+}
+.box1{
+  border: 1px solid #D5D5D5;
+  border-bottom:none;
+}
+.box-line-top{
+  border-top: 2px solid #AF4600;
+  border-left: 1px solid #D5D5D5;
+  border-right: 1px solid #D5D5D5;
+  border-bottom: 1px solid #D5D5D5;
+}
+.priceBox{
+  overflow: auto;
+  padding: 8px 5px 5px 5px;
+}
+.DataDl {
+  float: left;
+  font-weight: bold;
+  /*width: 85px;*/
+  width: auto;
+  margin: 0px 10px 0px 0px;
+  min-width: 70px;
+  _width: 75px;
+  _overflow: hidden;
+}
+.firstDl {
+  width: auto;
+  border-right: 1px solid #E1E8F5;
+  padding:2px 10px 0 5px;
+  margin-right: 10px;
+  *width: 180px;
+}
+.firstDl .current{
+  overflow: auto;
+}
+.DataDl dt.mini{
+  float: left;
+  font-size: 12px;
+  font-weight: normal;
+  height: 18px;
+  line-height: 18px;
+  margin-top: 8px;
+  /*padding-right: 10px;*/
+}
+.DataDl dd.mini{
+  float: left;
+  font-weight: normal;
+  height: 18px;
+  line-height: 18px;
+  margin-top: 8px;
+  *margin-top: 7px;
+}
+.bigest {
+  font-size: 36px;
+  line-height: 40px;
+}
+.currentPrice{
+  font-size: 25px;
+  line-height: 30px;
+}
+.currentChanged{
+  font-weight: normal;
+  line-height: 16px;
+}
+.currentLimit{
+  border-top: 1px solid #E1E8F5;
+  font-weight: normal;
+  color: #08237A;
+  padding: 2px 0px;
+  overflow: auto;
+}
+.currentLimit span{
+  margin-right: 5px;
+}
+.currentTime{
+  border-top: 1px solid #E1E8F5;
+  font-weight: normal;
+  padding: 2px 0px;
+  text-align: center;
+}
+.buy {
+    color: #EE3523;
+}
+.sell {
+  color: #009900 !important;
+}
+.sellSpan {
+  background: none repeat scroll 0 0 #D6656A;
+  display: inline;
+  float: left;
+  height: 20px;
+  margin-left: -1px;
+  width: 13px;
+}
+.buySpan {
+  background: none repeat scroll 0 0 #97CD51;
+  display: inline;
+  float: left;
+  height: 20px;
+  margin-left: -1px;
+  width: 13px;
+}
+.DataDl dt {
+  font-size: 14px;
+  height: 26px;
+  line-height: 26px;
+}
+.DataDl dd {
+  /*color: #CC0000;*/
+  height: 24px;
+  line-height: 24px;
+}
+.TitleBox {
+  height: 38px;
+  line-height: 38px;
+  overflow: hidden;
+  width: 100%;
+}
+.TitleBox1 {
+  height:50px;
+  line-height:50px;
+  overflow: hidden;
+  width: 100%;
+  border-bottom: 1px solid #D5D5D5;
+}
+.TitleBox2{
+  height: 45px;
+  line-height: 40px;
+  overflow: hidden;
+  width: 100%;
+	margin-top:10px;
+	margin-bottom:-10px;
+}
+.warnFont{
+	font-size: 12px;
+	color: red;
+}
+.box.green {
+border: 1px solid #77e588;
+border-top: 0;
+}
+.box.green .PlateTitle{
+background-color: #35aa47;
+}
+.box.red {
+border: 1px solid #ef8476;
+border-top: 0;
+}
+.box.red .PlateTitle{
+background-color: #e02222;
+}
+.PlateTitle {
+  background: none repeat scroll 0 0 #FDFDFD;
+  font-size: 14px;
+  height: 38px;
+  line-height: 38px;
+  padding-left: 15px;  border-bottom: 1px solid #eee;  color: #fff !important;
+  background-color: #4b8df8;
+  margin: 0;
+}
+.PlateTitle1{
+  background: none repeat scroll 0 0 #FDFDFD;
+  font-size: 14px;
+  height: 50px;
+  line-height: 70px;
+}
+.PlateTitle2{
+  background: none repeat scroll 0 0 #FDFDFD;
+  font-size: 14px;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 20px;
+}
+.PlateTitle1:after {
+  content: '';
+  display: inline-block;
+  position: relative;
+  top: 26px;
+  width: 8px;
+  height: 8px;
+  right: 10px;
+  float: right;
+  border-bottom: 1px solid #C3C5C9;
+  border-left: 1px solid #C3C5C9;
+  -webkit-transform: rotateZ(-45deg);
+  -moz-transform: rotateZ(-45deg);
+  -ms-transform: rotateZ(-45deg);
+}
+.h_bgR {
+  background: #f27676;margin: 23px 10px;float: left;
+}
+.h_bgY {
+  background: #FFB401;margin: 23px 10px;float: left;
+}
+.h_bgB {
+
+  background: #6fd3db;margin: 23px 10px;float: left;
+}
+.h_bgG{ 
+  background:#91DA91;margin: 23px 10px;float: left;
+}
+
+.PlateTitle span {
+  float: left;
+  margin-right: 19px;
+  font-size: 12px;
+}
+.PlateTitle a {
+  /*float: right;*/
+
+  margin-right: 15px;
+  font-size: 12px;
+}
+.PlateTitle b {
+  float: left;
+  font-weight: normal;
+  margin-right: 6px;
+  font-size: 12px;
+}
+table {
+  border-collapse: collapse;
+}
+.Transaction {
+  width: 100%;
+}
+.Transaction td, .Transaction th {
+  overflow: hidden;
+  text-align: center;
+}
+.Transaction th {
+  border-bottom: 1px solid #D5D5D5;
+  background: none repeat scroll 0 0 #fff;
+  font-weight: bold;
+
+  height: 28px;
+  line-height: 28px;
+}
+.Transaction td {
+  border-bottom: 1px solid #D5D5D5;
+  background: none repeat scroll 0 0 #FFFFFF;
+  height: 32px;
+  line-height: 32px;
+}
+.Transaction1 td, .Transaction1 th {
+  border-bottom: 1px solid #D5D5D5;
+  border-left: 1px solid #D5D5D5;
+  border-right: medium none;
+}
+.clear:after {
+  clear: both;
+  content: "";
+  display: block;
+}
+.PlateTitleA1 {
+  color: #3A83CB;
+  float: left;
+  font-weight: normal;
+  font-size: 12px;
+}
+.loginBox{
+  width: 500px;
+  margin: 20px auto;
+}
+.registerBox{
+  width: 720px;
+  margin: 20px auto;
+}
+.detail {
+  border-bottom: 1px dashed #D5D5D5;
+  padding-bottom: 13px;
+}
+.subtitle {
+  font-size: 12px;
+  height: 28px;
+  line-height: 28px;
+  padding-left: 11px;
+}
+.detailText {
+  height: 24px;
+  line-height: 24px;
+  padding-left: 11px;
+}
+.end {
+  border: medium none;
+}
+.buyBtc {
+  height: 51px;
+  margin-top: 20px;
+  width: 100%;
+}
+.buyBtc li {
+  float: left;
+  height: 51px;
+  width: 150px;
+  margin-left:5px;
+}
+.buyBtc li a {
+  background: none repeat scroll 0 0 #F9F9F9;
+  margin-right: 0;
+  width: 148px;
+}
+
+/* market */
+.newerDataBox {
+  background: url("../images/new-price.jpg") no-repeat scroll 13px 24px transparent;
+  height: 60px;
+  padding-left: 91px;
+  padding-top: 8px;
+}
+.newerDataBox strong {
+  color: #CC0000;
+  font-size: 36px;
+}
+
+/* order */
+.buyText {
+  margin-top: 12px;
+  width: 100%;
+}
+.buyText span {
+  float: left;
+  font-size: 14px;
+  height: 37px;
+  line-height: 37px;
+  text-align: right;
+  width: 113px;
+}
+.buyText strong {
+  float: left;
+  line-height: 37px;
+}
+.importantB {
+  color: #CC0000;
+  margin-right: 9px;
+}
+.loginValue {
+  border: 1px solid #D5D5D5;
+  float: left;
+  height: 29px;
+  line-height: 29px;
+  margin-right: 15px;
+  padding: 3px;
+  width: 224px;
+}
+.prompt, .prompt1 {
+  color: #CC0000;
+  height: 30px;
+  line-height: 30px;
+  padding-left: 20px;
+  padding-top: 13px;
+}
+.buyBtn {
+  height: 50px;
+  margin-top: 21px;
+  padding-left: 113px;
+}
+.my-grid table{
+  margin-bottom: 0px;
+  border: 0px;
+  border-radius: 0px;
+}
+
+/******************* rewrite bootstrap *******************/
+/* form */
+.form-horizontal .control-group{
+  height: 35px;
+  margin: 13px 0px 0px 0px;
+}
+.form-horizontal .control-label{
+  float: left;
+  height: 25px;
+  line-height: 25px;
+  padding-top: 5px;
+  margin-bottom: 5px;
+  text-align: right;
+  width: 68px;
+  font-size: 12px;
+}
+.form-horizontal-long .control-label{
+  width:80px;
+}
+.form-horizontal .controls {
+  margin-left: 74px;
+  line-height: 35px;
+  *margin-left: 0px;
+}
+.form-horizontal-long .controls {
+  margin-left:90px;
+  *margin-left: 0px;
+}
+.form-horizontal input,
+.form-horizontal select,
+.form-horizontal .uneditable-input {
+  border: 1px solid #D5D5D5;
+  float: left;
+  height: 28px;
+  line-height: 28px;
+  padding-left: 5px;
+  width: 196px;
+  border-radius: 0;
+  box-shadow: none;
+}
+.form-horizontal .captcha input{
+  width: 80px;
+}
+.form-horizontal .captcha .widget{
+  float: left;
+}
+.form-horizontal .captcha .widget img{
+  _width: 90px;
+  _height: 30px;
+}
+.form-horizontal .form-actions{
+  height: 36px;
+  padding: 13px 0px 13px 68px;
+  background-color: #fff;
+  border: 0px;
+  margin: 5px 0px 0px 0px;
+}
+.form-horizontal-long .form-actions{
+  height: 36px;
+  padding: 13px 0px 13px 168px;
+  background-color: #fff;
+  border: 0px;
+  margin: 5px 0px 0px 0px;
+}
+.form-horizontal .help-inline{
+  line-height: 30px;
+}
+.form-horizontal .hint{
+  color: #888888;
+  margin-left: 10px;
+}
+.form-horizontal .success .hint{
+  background:url("../images/success.jpg") no-repeat scroll left 5px transparent;
+  margin-left: 10px;
+  padding-left: 20px;
+}
+.form-horizontal .controls span.error{
+  background:url("../images/error.jpg") no-repeat scroll left 5px transparent;
+  margin-left: 10px;
+  padding-left: 20px;
+}
+.form-horizontal .error .hint{
+  display: none;
+}
+form{
+  margin: 0px;
+}
+input[type="text"], input[type="password"]{
+  font-size: 12px;
+  border-radius: 0px;
+  -webkit-box-shadow: 0px;
+  -moz-box-shadow: 0px;
+  box-shadow: 0px;
+}
+input.gray{
+  color: #AEAEAE;
+}
+.table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+  background-color: #E2E2E2;
+  border-bottom-width: 1px;
+  color: #797A7A;
+}
+.fee{ padding-left:10px;}

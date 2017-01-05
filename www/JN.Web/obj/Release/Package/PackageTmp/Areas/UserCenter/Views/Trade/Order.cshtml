@@ -1,0 +1,75 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model PagedList.PagedList<JN.Data.StockEntrustsTrade>
+@{
+    ViewBag.Title = "委托管理";
+    JN.Data.User Umodel = JN.Services.UserLoginHelper.CurrentUser();
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+
+        <div id="content">
+
+            <div class="box">
+                <div class="my-grid" id="order-grid">
+                    <table class="items table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr>
+                                <th width="15%">@T("创建时间")</th>
+                                <th width="7%">@T("买/卖")</th>
+                                <th width="11%">@T("数量")</th>
+                                <th width="9%">@T("价格")</th>
+                                <th width="11%">@T("已成交")</th>
+                                <th width="10%">@T("未成交")</th>
+                                <th width="10%">@T("手续费")</th>
+                                <th width="8%">@T("状态")</th>
+                                <th class="button-column" width="9%">@T("操作")</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count > 0)
+                            {
+                                for (int i = 0; i < Model.Count; i++)
+                                {
+                                    var item = Model[i];
+                            <tr>
+                                <td>@item.CreateTime</td>
+                                <td class="@(item.Direction == 1 ? "sell" : "buy")">@(typeof(JN.Data.Enum.TradeDirection).GetEnumDesc(item.Direction))</td>
+                                <td>T@(item.Quantity.ToString("F2"))</td>
+                                <td>$@item.Price.ToString("F3")</td>
+                                <td>T@(item.HaveTurnover.ToString("F2"))</td>
+                                <td>T@((item.Quantity - item.HaveTurnover).ToString("F2"))</td>
+                                <td>$@(item.Poundage.ToString("F3"))</td>
+                                <td class="@(item.Direction == 1 ? "sell" : "buy") @(item.Status == -1 ? "cancelled" : "")">@(typeof(JN.Data.Enum.TTCStatus).GetEnumDesc(item.Status))</td>
+                                <td style="width: 100px">
+                                    @if (item.Status >= 0 && item.Status <= 1)
+{
+    <a title="@T("撤消委托")" href="###" onclick="canceltrade(@item.ID)" class="btn btn-danger btn-mini">@T("取消交易")</a>
+}
+                                </td>
+                            </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <!--S 翻页页码  -->
+                    @Html.PagedListPager((IPagedList)Model, page => Url.Action(ViewContext.RouteData.Values["action"].ToString(),
+                       JN.Services.Tool.StringHelp.GetQueryString(HttpUtility.ParseQueryString(Request.Url.Query), page)), new PagedListRenderOptions() { ContainerDivClasses = new string[] { "pagination pagination-small pull-right" } })
+
+
+                    <!--E 翻页页码  -->
+                </div>
+            </div>
+        </div><!-- content -->
+
+<script>
+
+    function canceltrade(id) {
+        $.post('/usercenter/trade/cancelttc', { id: id }, function (data) {
+            if (data == 'ok') {
+                alert("@(T("已成功取消委托！"))", "/usercenter/trade/order");
+            }
+            else
+                alert(data);
+        });
+    }
+</script>

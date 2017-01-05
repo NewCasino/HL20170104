@@ -1,0 +1,167 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<!-- adminex-->
+<div class="row">
+    <div class="col-md-12">
+        <!--statistics start-->
+        <div class="row state-overview">
+            @{
+                foreach (JN.Entity.TIndexWidget widget in ViewBag.Widgets)
+                {
+                    <div class="col-md-3 col-xs-12 col-sm-6">
+                        <div class="panel purple">
+                            <div class="symbol">
+                                <i class="fa @widget.Icon"></i>
+                            </div>
+                            <div class="state-value">
+                                <div class="value">@widget.Value</div>
+                                <div class="title">@T(widget.Description)</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+        <!--statistics end-->
+    </div>
+
+</div>
+<!-- end adminex-->
+
+
+    @*<div class="alert alert-block alert-success">
+        <button type="button" class="close" data-dismiss="alert">
+            <i class="icon-remove"></i>
+        </button>
+
+        <i class="icon-ok green"></i>
+
+        欢迎使用
+        <strong class="green">
+            @(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName)后台管理系统
+            <small>(v1.0)</small>
+        </strong>
+        ,轻量级好用的后台管理系统.
+    </div>*@
+
+    <div class="row">
+            <div class="col-sm-6 widget-container-span">
+                <div class="widget-box ">
+                    <div class="widget-header">
+                        <h4 class="lighter">@T("最新公告")</h4>
+
+                        <div class="widget-toolbar no-border">
+                            <a href="#" data-action="collapse">
+                                <i class="icon-chevron-up"></i>
+                            </a>
+
+                            <a href="#" data-action="close">
+                                <i class="icon-remove"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="widget-body">
+                        <div class="widget-main no-padding no-margin">
+                            <table class="table table-bordered table-striped">
+                                @{
+                                    string ggWhere = "Platform='会员平台'";
+                                    if (JN.BLL.users.IsLogin().IsAgent)
+                                    {
+                                        ggWhere += " or Platform='报单中心'";
+                                    }
+                                    List<JN.Entity.TNotice> ggLst = JN.BLL.notices.GetModelList(6, ggWhere, "IsTop,ID desc");
+                                    if (ggLst.Count > 0)
+                                    {
+
+                                        foreach (JN.Entity.TNotice notice in ggLst)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <span class="pull-right">@notice.CreateTime.ToString("yyyy-MM-dd")</span>
+                                                    <a href="/User/Notice/Detail/@notice.ID">
+                                                        @JN.Common.Utils.CutString(notice.Title, 0, 25)
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <tr><td>@T("暂无通告")</td></tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        <div class="col-sm-6 widget-container-span">
+            <div class="widget-box ">
+                <div class="widget-header">
+                    <h4 class="lighter">@T("登录历史")</h4>
+
+                    <div class="widget-toolbar no-border">
+                        <a href="#" data-action="collapse">
+                            <i class="icon-chevron-up"></i>
+                        </a>
+
+                        <a href="#" data-action="close">
+                            <i class="icon-remove"></i>
+                        </a>
+                    </div>
+                </div>
+           
+
+            <div class="widget-body">
+                <div class="widget-main no-padding no-margin">
+                    <table class="table table-bordered table-striped">
+                        @{
+                            List<JN.Entity.TActLog> actLst = JN.BLL.actlogs.GetModelList(6, "Location='/User/Login' and UID=" + JN.BLL.users.IsLogin().ID, "ID desc");
+                            if (actLst.Count > 0)
+                            {
+
+                                foreach (JN.Entity.TActLog log in actLst)
+                                {
+                                    <tr>
+                                        <td>@log.IP</td>
+                                        <td>@log.ActContent</td>
+                                        <td>@log.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    </tr>
+                                }
+
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+            </div>
+        </div><!-- /row -->
+<!-- page specific plugin scripts -->
+<!--[if lte IE 8]>
+  <script src="/assets/js/excanvas.min.js"></script>
+<![endif]-->
+<script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('.widget-container-span').sortable({
+            connectWith: '.widget-container-span',
+            items: '> .widget-box',
+            opacity: 0.8,
+            revert: true,
+            forceHelperSize: true,
+            placeholder: 'widget-placeholder',
+            forcePlaceholderSize: true,
+            tolerance: 'pointer'
+        });
+    });
+</script>

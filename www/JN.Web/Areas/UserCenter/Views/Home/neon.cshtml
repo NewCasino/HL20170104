@@ -1,0 +1,245 @@
+﻿@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+    var userEntity = JN.Services.UserLoginHelper.CurrentUser();
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+}
+
+
+<p class="t14">欢迎您！</p>
+<div class="blank"></div>
+
+
+
+<div class="blank"></div>
+<div class="huiyuanone">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="f_l"><img src="~/Theme/102001/images/touxiang.gif" width="115" height="115"></div>
+        </div>
+        <div class="col-md-5">
+
+            <dl class="f_c">
+                <dt style="background: url(~/Theme/102001/images/main_user.png) no-repeat left center; text-indent: 1.5em;"><strong>当前账号：@Umodel.UserName</strong><a href="/usercenter/user/modify">编辑资料</a></dt>
+                <dd>
+                    <p>姓名：@Umodel.RealName</p>
+                    <p>等级：@((Umodel.IsAgent ?? false) ? "报单中心" : "会员")</p>
+                    <p>手机：@Umodel.Mobile</p>
+
+                    <p>推荐人：@Umodel.RefereeUser</p>
+
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-5">
+
+            <dl class="f_c f_r">
+                @{
+                    var UmodelInvestment = MvcCore.Unity.Get<JN.Data.Service.IInvestmentService>().List(x => x.IsBalance && x.UID == Umodel.ID);
+                    int All = UmodelInvestment.Where(x => x.Status == (int)JN.Data.Enum.InvestmentStatus.Transaction || x.Status == (int)JN.Data.Enum.InvestmentStatus.Deal).Count();
+                    int Deal = UmodelInvestment.Where(x => x.Status == (int)JN.Data.Enum.InvestmentStatus.Deal).Count();
+
+
+                    //decimal ADD1102 = MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1102).Count() > 0 ? MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1102).Sum(x => x.BonusMoney) : 0;
+
+                    //decimal ADD1103 = MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1103).Count() > 0 ? MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1103).Sum(x => x.BonusMoney) : 0;
+
+                    //decimal ADD1106 = MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1106).Count() > 0 ? MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1106).Sum(x => x.BonusMoney) : 0;
+
+                    decimal Day1102 = 0;
+                    Day1102 = MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && System.Data.Entity.SqlServer.SqlFunctions.DateDiff("DAY", x.CreateTime, DateTime.Now) == 0 && x.BonusID == 1102).Count() > 0 ? MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && System.Data.Entity.SqlServer.SqlFunctions.DateDiff("DAY", x.CreateTime, DateTime.Now) == 0 && x.BonusID == 1102).Sum(x => x.BonusMoney) : 0;
+
+    //if (MvcCore.Unity.Get<JN.Data.Service.ISettlementService>().List().Count() > 0)
+    //{
+    //    int Last = MvcCore.Unity.Get<JN.Data.Service.ISettlementService>().List().OrderByDescending(x => x.ID).FirstOrDefault().ID;
+
+    //    Day1102 = MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1102 && x.Period == Last).Count() > 0 ? MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Umodel.ID && x.BonusID == 1102 && x.Period == Last).Sum(x => x.BonusMoney) : 0;
+    //}
+
+                }
+                <dt style="background: url(~/Theme/102001/images/main_stock.png) no-repeat left center; text-indent: 1.5em;"><strong>投股信息</strong></dt>
+                <dd>
+                    <p>点股数量(总/出局)：<span>@All/@Deal</span> </p>
+                    <div class="blank" style="height:0px;"></div>
+                    @*<p>日分红：<span><a href="/usercenter/finance/bonusdetail">@(Day1102.ToString("F2"))</a></span> </p>*@
+                    @*<p>团队奖累计：<span><a href="/usercenter/User/TreeView">@((Umodel.Addup1106 ?? 0).ToString("F2"))</a></span> </p>*@
+                    @*<p>分红出局：<span>是&nbsp;<a href="javascript:;" onclick="ft_dg()">复投点股</a></span> </p>*@
+
+
+
+
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<div class="blank"></div>
+<div class="qiandao">
+
+    @{
+        string NoticeStr = "暂无信息";
+        var Notice = MvcCore.Unity.Get<JN.Data.Service.INoticeService>().List().OrderByDescending(x => x.ID).FirstOrDefault();
+        if (Notice != null)
+        {
+            NoticeStr = Notice.Title;
+        }
+    }
+
+    最新站内信通知：<a href="@(Notice == null ? "#" : "/Usercenter/Notice/Detail?ID=" + Notice.ID)">@NoticeStr</a>
+
+</div>
+<div class="blank"></div>
+<dl class="huiyuantwo">
+    <dt class="huiyuantitles">我的账户</dt>
+    <dd>
+        <div class="row">
+            <div class="col-md-4">
+                <p>
+                    钱包余额（元）<br>
+                    <span><a href="#">@Umodel.Wallet2001.ToString("F2")</a></span><br>
+
+                </p>
+            </div>
+            <div class="col-md-4">
+                <p>
+                    投资钱包（元）<br>
+                    <span><a href="#">@Umodel.Wallet2004.ToString("F2")</a></span><br>
+                    @if (Umodel.Investment <= 0)
+                    {
+                        <a href="/usercenter/ActiviteCoin/InvestmentWallet" id="" class="deluser" style="color:red">
+                            申请投资
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/usercenter/ActiviteCoin/InvestmentWallet" id="" class="deluser" style="color:red">
+                            点击投资
+                        </a>
+                    }
+                </p>
+
+            </div>
+            <div class="col-md-4">
+                <p>
+                    收入总额（元）<br>
+                    <span><a href="#">@(((Umodel.Addup1102 ?? 0) + (Umodel.Addup1103 ?? 0) + (Umodel.Addup1106 ?? 0) + (Umodel.Addup1802 ?? 0)).ToString("F2"))</a></span><br>
+                    <a href="/usercenter/finance/accountdetail" style="color:red">查看资金流水</a>
+                </p>
+
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <p>
+                    日分红<br>
+                    <span><a href="#">@(Day1102.ToString("F2"))</a></span><br>
+                    <a href="/usercenter/finance/bonusdetail" style="color:red">查看详细</a>
+                </p>
+
+            </div>
+            <div class="col-md-4">
+                <p>
+                    直推奖<br>
+                    <span><a href="#">@(((Umodel.Addup1103 ?? 0)).ToString("F2"))</a></span><br>
+                    <a href="/usercenter/Finance/BonusDetail?bonusid=1103" style="color:red">查看详细</a>
+                </p>
+
+            </div>
+            <div class="col-md-4">
+                <p>
+                    平衡奖<br>
+                    <span><a href="#">@(((Umodel.Addup1104 ?? 0)).ToString("F2"))</a></span><br>
+                    <a href="/usercenter/Finance/BonusDetail?bonusid=1104" style="color:red">查看详细</a>
+                </p>
+
+            </div>
+            <div class="col-md-4">
+                <p>
+                    培育奖<br>
+                    <span><a href="#">@((Umodel.Addup1105 ?? 0).ToString("F2"))</a></span><br>
+                    <a href="/usercenter/Finance/BonusDetail?bonusid=1105" style="color:red">查看详细</a>
+                </p>
+
+            </div>
+            <div class="col-md-4">
+                <p>
+                    激活币<br>
+                    <span><a href="#">@((Umodel.Wallet2004).ToString("F2"))</a></span><br>
+                </p>
+
+            </div>
+            <div class="col-md-4">
+                <p>
+                    直属推荐会员（人）<br>
+                    <span><a href="#">@(JN.Services.Manager.Users.GetAllRefereeChild(Umodel, 1).Count())</a></span><br>
+                    <a href="/usercenter/User/TreeView" style="color:red">查看团队人员</a>
+                </p>
+
+            </div>
+        </div>
+    </dd>
+</dl>
+
+<div class="blank"></div>
+
+
+<script>
+    $(function () {
+        $("#d_clip_button").click(function () {
+            var Url = $("#tglj").val();
+            copyToClipboard(Url);
+        });
+    });
+</script>
+<div class="tgljs">
+    <h3>我的推广链接</h3>
+    <p>
+        <a href="@(JN.Services.Tool.ConfigHelper.GetConfigBool("HaveHttps") ? "https://":"http://")@(HttpContext.Current.Request.Url.Host + "/UserCenter/Reg?r=" + Umodel.UserName)">@T("立刻跳转")</a>
+        <a href="/usercenter/user/mylink">@T("复制推广链接")</a>
+        您可将该链接发给您的朋友，推荐他注册成为我们的会员，效果同上
+    </p>
+</div>
+
+<div class="blank"></div>
+
+<script type="text/javascript">
+    $("#zcxjb").on("click", function () {
+        var id = $(this).attr("data-value");
+        bootbox.confirm('确认进行复投吗？', function (result) {
+            if (result)
+                $.post('/UserCenter/User/Repeat', {}, function (data) {
+                    if (data.Status == 200) {
+                        alert("复投成功！");
+                        location.reload();
+                    }
+                    else {
+                        alert("复投失败," + data.Message);
+                    }
+                });
+        });
+    });
+    $("#fir").on("click", function () {
+        var id = $(this).attr("data-value");
+        bootbox.confirm('确认进行投资吗？', function (result) {
+            if (result)
+                $.post('/usercenter/user/doPass', {}, function (data) {
+                    if (data.Status == 200) {
+                        alert("投资成功！");
+                        location.reload();
+                    }
+                    else {
+                        alert("投资失败," + data.Message);
+                    }
+                });
+        });
+    });
+</script>

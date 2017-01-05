@@ -1,0 +1,130 @@
+﻿@model JN.Data.User
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+
+
+
+
+<div class="row" style="margin-top:50px">
+    <div class="col-sm-3">
+        @{
+            var zlist = MvcCore.Unity.Get<JN.Data.Service.IUserService>().List(x => (x.ParentPath.Contains("," + Model.ID.ToString() + ",") || x.ParentID == Model.ID) && x.IsActivation);
+            decimal zyj = zlist.Count() > 0 ? zlist.Sum(x => x.Investment) : 0;
+        }
+        <div class="tile-stats tile-red">
+            <div class="icon"><i class="entypo-users"></i></div>
+            <div class="num ng-binding">@zyj.ToString("F2")</div>
+            <div class="tile-footer">
+                <h3>@T("总业绩")</h3> <i class="fa fa-arrow-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-sm-3">
+        @{
+            var xzlist = MvcCore.Unity.Get<JN.Data.Service.IUserService>().List(x => (x.ParentPath.Contains("," + Model.ID.ToString() + ",") || x.ParentID == Model.ID) && x.IsActivation && System.Data.Entity.SqlServer.SqlFunctions.DateDiff("DAY", x.CreateTime, DateTime.Now) == 0);
+            decimal xzyj = xzlist.Count() > 0 ? xzlist.Sum(x => x.Investment) : 0;
+        }
+        <div class="tile-stats tile-green">
+            <div class="icon"><i class="entypo-chart-bar"></i></div>
+            <div class="num ng-binding">@xzyj.ToString("F2")</div>
+            <div class="tile-footer">
+                <h3>@T("新增业绩")</h3> <i class="fa fa-arrow-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-sm-3">
+        @{
+            var jjlist = MvcCore.Unity.Get<JN.Data.Service.IBonusDetailService>().List(x => x.UID == Model.ID);
+            decimal ljjj = jjlist.Count() > 0 ? jjlist.Sum(x => x.BonusMoney) : 0;
+        }
+        <div class="tile-stats tile-aqua">
+            <div class="icon"><i class="entypo-cc-nc"></i></div>
+            <div class="num ng-binding">@(ljjj.ToString("F2"))</div><div class="tile-footer">
+                <h3>@T("累计奖金")</h3> <i class="fa fa-arrow-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-sm-3">
+
+        <div class="tile-stats tile-blue">
+            <div class="icon"><i class="entypo-rss"></i></div>
+            <div class="num ng-binding">@Model.Investment</div>
+            <div class="tile-footer">
+                <h3>@T("注册类型")</h3> <i class="fa fa-arrow-right"></i>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div ui-view="" class="ng-scope">
+    <div class="row ng-scope" ng-controller="AccountCtrl">
+        <div class="col-md-12">
+            <div class="member-entry">
+
+                <a href="javascript://" class="member-img">
+                    <img src="/Images/Client%203.png" class="img-rounded">
+                    <i class="entypo-forward"></i>
+                </a>
+
+                <div class="member-details">
+                    <h4>
+                        <a href="extra-timeline.html" class="ng-binding">@Model.UserName @(Model.IsActivation ? "已激活" : "未激活")</a>
+                    </h4>
+
+                    <!-- Details with Icons -->		<div class="row info-list">
+
+
+                        <div class="col-sm-6">
+                            <i class="entypo-cc-nd"></i>
+                            @T("团队人数")： <a href="#">@zlist.Count()</a>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <i class="entypo-credit-card"></i>
+                            @T("EP余额")：<a href="#">@Model.Wallet2002.ToString("F2")</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <i class="entypo-cc-nd"></i>
+                            @T("推荐数量")： <a href="#">@(MvcCore.Unity.Get<JN.Data.Service.IUserService>().List(x => x.RefereeID == Model.ID && x.IsActivation).Count())</a>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <i class="entypo-cc-nd"></i>
+                            @T("累计激活帐户")：<a href="#">@(MvcCore.Unity.Get<JN.Data.Service.IUserService>().List(x => x.AgentID == Model.ID && x.IsActivation).Count())个</a>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <i class="entypo-phone"></i>
+                            @T("未激活帐户")：<a href="#">@(MvcCore.Unity.Get<JN.Data.Service.IUserService>().List(x => x.AgentID == Model.ID && x.IsActivation == false).Count())个</a>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <i class="entypo-mail"></i>
+                            @T("电子邮件")：<a href="#">@Model.Email</a>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <i class="entypo-location"></i>
+                            @T("帐号类型")：<a href="#">@Model.Investment</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <i class="entypo-cc-nd"></i>
+                            @T("所属报单中心")：<a href="#">@Model.AgentUser</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGE CONTENT ENDS -->
+</div><!-- /.col -->
+<!-- page specific plugin scripts -->

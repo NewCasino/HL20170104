@@ -1,0 +1,365 @@
+﻿@{
+    ViewBag.Title = "股权交易大厅";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+    JN.Data.User Umodel = null;
+    if (JN.Services.UserLoginHelper.CurrentUser() == null)
+    {
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
+    else
+    {
+        Umodel = MvcCore.Unity.Get<JN.Data.Service.IUserService>().Single(JN.Services.UserLoginHelper.CurrentUser().ID);
+    }
+    //最新价格
+    decimal currentprice = JN.Services.Manager.CFB.getcurrentprice();
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<script type="text/javascript" src="/js/trade.js"></script>
+<link href="~/css/trade.css" rel="stylesheet" />
+<div class="row-fluid">
+    <!-- MAIN top -->
+    @*<div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-exchange"></i>@T("股权价格趋势")</h1>
+        </div>
+
+    </div>*@
+    <!--END MAIN top -->
+    <div class="row">
+        <div class="col-md-12">
+            <div id="container1" style="min-width: 300px; height: 200px; margin: 0 auto"></div>
+
+        </div>
+    </div>
+    <div class="row margin-top-20">
+        <div class="col-md-12">
+            <div id="container" style="min-width: 300px; height: 400px; margin: 0 auto"></div>
+        </div>
+    </div>
+    <hr />
+   <input id="ttc_currentprice" type="hidden" />
+    <div class="box mt20">
+        <!--买入、卖出、买卖盘S-->
+        <div class="trade_area">
+            <div class="trade_sub_border col-lg-6 col-md-6 col-sm-6 col-xs-12" style="height:380px">
+                <div class="trade_title blue">@T("买入股权")</div>
+                @using (Ajax.BeginForm("Subscription", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "frmsell", @class = "" }))
+                            {
+                    <ul>
+                        <li><span>@T("可用余额")：</span> <span>@(Umodel.Wallet2002.ToString("F2"))$</span></li>
+                        <li>
+                            <span> @T("当前价格")：</span> <span>
+                                                   <input type="text" class="fr input" id="buyprice" name="buyprice" value="@currentprice.ToString("F2")" readonly />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>
+                        <li><span>@T("可买数量")：</span> <span><strong id="buymax">@(currentprice > 0 ? (Umodel.Wallet2002 / currentprice).ToString("F0") : "0")</strong></span></li>
+                        @*<li>
+                            <span> @T("买入数量")：</span> <span>
+                                                   <input type="text" class="fr input" id="buynumber" value="0" onkeyup="vNum(this, 2); buysumprice();" name="buynumber" />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>*@
+                        <li>
+                            <span> @T("买入金额")：</span> <span>
+                                                   <input type="text" class="fr input" name="buymoney" id="buymoney" />
+                            </span>
+                        </li>
+                        <li>
+                            <span style="color:#f00"> @T("二级密码")：</span> <span>
+                            <input type="password" name="tradeinPassword" id="tradeinPassword" class="fr input" />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>
+                        <li>
+                            <span> </span> <span>
+                            </span>
+                        </li>
+                        <li style="margin-top:25px;">
+                            <span></span> 
+                        <input type="submit" style="width:222px;" class="button button-caution button-rounded button-large" value='@T("买入(股权)")' /></li>
+                    </ul>
+                }
+            </div>
+            <div class="trade_sub_border col-lg-6 col-md-6 col-sm-6 col-xs-12" style="height:380px">
+                <div class="trade_title blue">@T("兑换EP")</div>
+                @using (Ajax.BeginForm("TTCOut", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost2" }, new { id = "frmsell", @class = "" }))
+                {
+                    <ul>
+                        <li><span>@T("帐户总量")：</span> <span>@(Umodel.Wallet2004.ToString("F2"))</span></li>
+                        <li><span>@T("兑出价格")：</span> <span><input type="text" value="@currentprice.ToString("F2")" class="fr input" name="sellprice" id="sellprice" readonly/></span></li>
+                        <li><span>@T("可兑数量")：</span> <span><strong id="sellmax">@(Umodel.Wallet2004.ToString("F2"))</strong></span></li>
+                        <li>
+                            <span>@T("兑出数量")：</span> <span>
+                                <input type="text" value="0" class="fr input" onkeyup="vNum(this, 2); sellsumprice();" id="sellnumber" name="sellnumber" />
+                            </span>
+                        </li>
+                        <li><span>@T("兑出金额")：</span> <span><input type="text" class="fr input" id="sellmoney" disabled="disabled" /></span></li>
+                        <li>
+                            <span style="color:#f00">@T("二级密码")：</span> <span>
+                                <input type="password" class="fr input" name="tradeoutPassword" id="tradeoutPassword" />&nbsp;<font style="color:#f00">*</font>
+                            </span>
+                        </li>
+                        <li style="margin-top:25px;">
+                            <span></span>
+                            <input type="submit" style="width:222px;" class="button button-action button-rounded button-large" value='@T("兑换EP")' />
+                        </li>
+                    </ul>
+                }
+            </div>
+
+        </div>
+        <!--买入、卖出、买卖盘E-->
+    </div>
+    <hr />
+    <table class="bordered">
+        <caption class="blue">@T("当前预购")<div style="float:right; font - weight:normal; font - size:12px; ">@*<a href="@Url.Action("PerOrder")">more</a>*@</div></caption>
+        <tr>
+            <th id="sublist-grid_c0">@T("创建时间")</th>
+            <th id="sublist-grid_c0">@T("预购单号")</th>
+            <th id="sublist-grid_c2">@T("预购金额")</th>
+            <th id="sublist-grid_c3">@T("买入金额")</th>
+            <th id="sublist-grid_c6">@T("状态")</th>
+        </tr>
+        <tbody>
+            @{
+                var perorders = MvcCore.Unity.Get<JN.Data.Service.ICFBPreOrderService>().List(x => x.UID == Umodel.ID && x.Status >=0 && x.Status < 2).Take(20).OrderByDescending(x => x.ID).ToList();
+                if (perorders.Count > 0)
+                {
+                    foreach (var item in perorders)
+                    {
+                        int jdjgfz = jdjgfz = cacheSysParam.SingleAndInit(x => x.ID == 2305).Value2.ToInt();
+                        <tr class="odd">
+                            <td>@item.CreateTime.ToShortDateString()</td>
+                            <td>@item.OrderNumber</td>
+                            <td>@item.PreMoney</td>
+                            <td>@(item.HaveSubscribeMoney)</td>
+                            <td>@typeof(JN.Data.Enum.PreOrderStatus).GetEnumDesc(item.Status)</td>
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+
+
+    <table class="bordered">
+        <caption class="blue">@T("买入记录")<div style="float:right; font - weight:normal; font - size:12px; "><a href="@Url.Action("Order")">more</a></div></caption>
+
+            <tr>
+                <th id="sublist-grid_c0">@T("创建时间")</th>
+                @*<th id="sublist-grid_c1">@T("上次解冻时间")</th>*@
+                <th id="sublist-grid_c2">@T("买入价格")</th>
+                <th id="sublist-grid_c3">@T("买入数量")</th>
+                <th id="sublist-grid_c4">@T("买入总价")</th>
+                <th id="sublist-grid_c5">@T("未解冻数量")</th>
+                @*<th id="sublist-grid_c5">@T("解冻次数")</th>*@
+                <th id="sublist-grid_c6">@T("状态")</th>
+                <th id="sublist-grid_c6">@T("操作")</th>
+            </tr>
+        <tbody>
+            @{
+                var subscribes = MvcCore.Unity.Get<JN.Data.Service.ICFBSubscribeService>().List(x => x.UID == Umodel.ID).Take(20).OrderByDescending(x => x.ID).ToList();
+                if (subscribes.Count > 0)
+                {
+                    foreach (var item in subscribes)
+                    {
+                        int jdjgfz = cacheSysParam.SingleAndInit(x => x.ID == 2405).Value2.ToInt();
+                        <tr class="odd">
+                            <td>@item.CreateTime.ToShortDateString()</td>
+                            @*<td>@item.LastUsedTime</td>*@
+                            <td>@item.Price</td>
+                            <td>@(item.SubscribeNumber.ToString("F2"))</td>
+                            <td>$@(item.TotalAmount.ToString("F2"))</td>
+                            <td>@((item.SubscribeNumber - item.CanBeUsed ?? 0).ToString("F2"))</td>
+                            @*<td>@(item.UsedTimes) 次</td>*@
+                            <td>@typeof(JN.Data.Enum.SubscribeStatus).GetEnumDesc(item.Status)</td>
+                            @if (item.Status <= (int)JN.Data.Enum.SubscribeStatus.PartOfUsed)
+                            {
+                                if (item.CreateTime.AddMinutes(jdjgfz) <= DateTime.Now)
+                                {
+                                    <td><a class="btn btn-success btn-mini" href="###" onclick="thawstock(@item.ID)">马上解冻</a></td>
+                                }
+                                else
+                                {
+                                    <td><a class="btn btn-danger btn-mini">剩余:@(JN.Services.Tool.DateTimeDiff.DateDiff_full(item.CreateTime.AddMinutes(jdjgfz), DateTime.Now))</a></td>
+                                }
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+
+
+
+    <div style="clear:both"></div>
+
+</div>
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript">
+    COIN_HEIGHT();
+    COIN_WIDTH();
+    function COIN_HEIGHT() {
+        //ajax
+        $.ajax({
+            type: "POST",
+            dataType: "JSON",
+            data: "",
+            url: "@(Url.Action("ajax_coin_info_height"))",
+            success: function (coin_height_data) {
+                Highcharts.setOptions({
+                    colors: ['#00b050', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+                });
+                //chart start
+                $('#container').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: '@(T("股权价格趋势"))'
+                    },
+                    subtitle: {
+                        text: 'Equity Quote Infomation.'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        labels: {
+                            rotation: -45,
+                            style: {
+                                fontSize: '13px',
+                                fontFamily: 'Verdana, sans-serif'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 100,
+                        title: {
+                            text: '@(T("销售量"))（%)'
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        pointFormat: 'Quote: <b>{point.y:.1f} %</b>'
+                    },
+                    series: [{
+                        name: 'Quote',
+                        data: coin_height_data,
+                        dataLabels: {
+                            enabled: true,
+                            rotation: -90,
+                            color: '#FFFFFF',
+                            align: 'right',
+                            format: '{point.y:.1f}', // one decimal
+                            y: 10, // 10 pixels down from the top
+                            style: {
+                                fontSize: '13px',
+                                fontFamily: 'Verdana, sans-serif'
+                            }
+                        }
+                    }]
+                });
+                //chart end
+            },
+            error: function () {
+               // alert("ERROR!");
+            }
+        });
+
+    }
+
+    function COIN_WIDTH() {
+        //ajax
+        $.ajax({
+            type: "POST",
+            dataType: "JSON",
+            data: "",
+            url: "@(Url.Action("ajax_coin_info_width"))",
+            success: function (data) {
+                //chart start
+
+                $('#container1').highcharts({
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: '@(T("股权当前价格销售量"))（%)'
+                    },
+                    xAxis: {
+                        categories: ['@(T("股权"))']
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 100,
+                        title: {
+                            text: '@(T("目前现况"))（%）'
+                        }
+                    },
+                    legend: {
+                        reversed: true
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: 'normal'
+                        }
+                    },
+                    series: [{
+                        name: '@(T("股权"))',
+                        data: data
+                    }]
+                });
+                //chart end
+            },
+            error: function () {
+                //alert("ERROR!");
+            }
+        });
+
+    }
+
+</script>
+<script src="/js/highcharts.js"></script>
+<script src="/js/modules/exporting.js"></script>
+<script>
+
+    function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@T("买入成功！")");
+                window.location.href = "@(Url.Action("TTC"))";
+                return;
+            } else {
+                alert(data.Message);
+                return false;
+        }
+    }
+
+    function afterPost2(data) {
+        if (data.Status == 200) {
+            alert("@T("兑换成功！")");
+            window.location.href = "@(Url.Action("TTC"))";
+            return;
+        } else {
+            alert(data.Message);
+            return false;
+        }
+    }
+
+    function thawstock(id) {
+        $.post('@(Url.Action("thawstock"))', { id: id }, function (data) {
+            if (data == 'ok') {
+                alert("@(T("恭喜您，解冻成功!"))");
+                location.href = "@(Url.Action("TTC"))";
+            }
+            else
+                alert(data);
+        });
+    }
+</script>

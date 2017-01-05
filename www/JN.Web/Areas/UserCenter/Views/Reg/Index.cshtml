@@ -1,0 +1,577 @@
+﻿@{
+    Layout = null;
+    var sysEntity = MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1);
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Neon Admin Panel" />
+    <meta name="author" content="" />
+
+    <title>@(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName) | Login</title>
+
+
+    <link rel="stylesheet" href="/theme/neon/assets/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css" />
+    <link rel="stylesheet" href="/theme/neon/assets/css/font-icons/entypo/css/entypo.css" />
+    <link rel="stylesheet" href="/theme/neon/assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="/theme/neon/assets/css/neon-core.css" />
+    @*<link rel="stylesheet" href="/theme/neon/assets/css/neon-themereg.css" />*@
+    <link href="~/Theme/neon/assets/css/neon-themereg.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/theme/neon/assets/css/custom.css" />
+    <script src="/theme/neon/assets/js/jquery-1.11.0.min.js"></script>
+    <style>
+        .file-input-wrapper {
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+            .file-input-wrapper input[type=file], .file-input-wrapper input[type=file]:focus, .file-input-wrapper input[type=file]:hover {
+                position: absolute;
+                top: 0;
+                left: 0;
+                cursor: pointer;
+                opacity: 0;
+                filter: alpha(opacity=0);
+                z-index: 99;
+                outline: 0;
+            }
+
+        .file-input-name {
+            margin-left: 8px;
+        }
+    </style>
+
+</head>
+<body class="page-body login-page login-form-fall loaded login-form-fall-init">
+    <!--[if lt IE 9]>
+    <div style="color:#fff; width:100%; height:100%; line-height:100px; font-size:20px; text-align:center">
+        您目前使用的是旧版浏览器，为更加安全使用请下载最新浏览器<a style="color:red" href="http://browsehappy.com/" target="_blank">点此下载</a>
+    </div>
+    <![endif]-->
+    <!-- This is needed when you send requests via Ajax -->
+    <script type="text/javascript">
+        var baseurl = '';
+    </script>
+
+    <div class="login-container">
+
+        <div class="login-header login-caret">
+            @*<div class="header-logo">
+                <div class="logo_g">
+                    <a class="circle"></a>
+                    <span></span>
+                </div>
+                <div class="logo_text"></div>
+            </div>*@
+
+                <div class="login-content">
+
+                    <a class="logo" style="font-size:60px; color:#fff;">
+                        @T(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).SysName)
+                    </a>
+                    <!-- progress bar indicator -->
+                    <div class="login-progressbar-indicator">
+                        <h3>0%</h3>
+                        <span>logging in...</span>
+                    </div>
+                </div>
+
+            </div>
+
+        <div class="login-progressbar">
+            <div></div>
+        </div>
+
+        <div class="login-form">
+
+            <div class="login-content" style="width: 50%; max-width: 500px; background-color: rgba(0, 0, 0, 0.81); padding: 10px 20px">
+                <form class="form-horizontal margin-none" id="frmAdd" method="post">
+                    <div class="form-group">
+                        @*<label class="col-sm-3 control-label"></label>*@
+
+                        @*<div class="col-xs-12">
+                                <div class="clearfix">
+                                    <a class="btn btn-primary addnew">填充一个随机数据（测试用，密码6个1，6个2，6个3）</a>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="bankuser">@T("注册类型"):</label>
+
+                        <div class="col-xs-12 col-sm-5">
+                            <div class="clearfix">
+
+                                @Html.DropDownList("FristApplyInvestment", new SelectList(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 1000 && x.IsUse).OrderBy(x => x.Sort).ToList(), "Value", "Name"))
+                                @*, "--请选择--", new { @class = "form-control" }*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">@T("用户名")*:</label>
+
+                        <div class="col-sm-9">
+                            <div class="clearfix">
+                                <input type="text" name="username" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">@T("推荐人")*:</label>
+
+                        <div class="col-sm-9">
+                            <div class="clearfix">
+                                <input type="text" name="refereeuser" class="form-control" value="@ViewBag.username"  /> @*&nbsp;<button type="button" class="btn btn-primary btn-sm ckruser">@T("验证")</button>*@
+                            </div>
+                        </div>
+                    </div>
+                    @* parentuser:安置人  *@
+                    @if (JN.Services.Tool.ConfigHelper.GetConfigString("MemberAtlas") != "sun")
+                        {
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">@T("安置人编号"):</label>
+                                <div class="col-sm-9">
+                                        <input type="text" name="parentuser" style="width:200px;float:left" class="form-control" value="@ViewBag.ParentUser" /><button type="button" class="btn btn-primary btn-sm ckuser">@T("验证")</button>
+                                </div>
+                            </div>
+                        }
+                        @if (JN.Services.Tool.ConfigHelper.GetConfigString("MemberAtlas") != "sun")
+                        {
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">@T("安置位置"):</label>
+
+                                <div class="col-xs-12 col-sm-2">
+                                    <div class="clearfix">
+                                        <select name="childplace" class="form-control">
+                                            @if (JN.Services.Tool.ConfigHelper.GetConfigString("MemberAtlas") != "double")
+                                            {
+                                                <option value="1" @(Request["childplace"] == "1" ? "selected" : "")>左</option>
+                                                <option value="2" @(Request["childplace"] == "2" ? "selected" : "")>中</option>
+                                                <option value="3" @(Request["childplace"] == "3" ? "selected" : "")>右</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="1" @(Request["childplace"] == "1" ? "selected" : "")>左</option>
+                                                <option value="2" @(Request["childplace"] == "2" ? "selected" : "")>右</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    @if (JN.Services.Tool.ConfigHelper.GetConfigBool("HaveAgent"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">@T("报单中心编号"):</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" name="agentuser" class="form-control" value="@ViewBag.AgentName" />
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="password">@T("一级密码")*:</label>
+
+                        <div class="col-sm-9">
+                            <div class="clearfix">
+                                <input type="password" name="password" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="passwordconfirm">@T("确认一级密码"):</label>
+
+                        <div class="col-sm-9">
+                            <div class="clearfix">
+                                <input type="password" name="passwordconfirm" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="password2">@T("二级密码")*:</label>
+
+                        <div class="col-sm-9">
+                            <div class="clearfix">
+                                <input type="password" name="password2" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="password2confirm">@T("确认二级密码"):</label>
+
+                        <div class="col-sm-9">
+                            <div class="clearfix">
+                                <input type="password" name="password2confirm" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    @if (sysEntity.RegistItems.Contains(",NickName,") || sysEntity.RegistNotNullItems.Contains(",NickName,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="nickname">@T("昵称"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="nickname" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",RealName,") || sysEntity.RegistNotNullItems.Contains(",RealName,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="realname">@T("真实姓名")*:</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="realname" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @*<div class="form-group">
+                            <label class="col-sm-3 control-label">@T("性别")</label>
+
+                            <div class="col-sm-9">
+                                <div>
+                                    <label class="blue">
+                                        <input name="gender" value="男" type="radio" class="ace" />
+                                        <span class="lbl"> @T("男")</span>
+                                    </label>
+                                    <label class="blue">
+                                        <input name="gender" value="女" type="radio" class="ace" />
+                                        <span class="lbl"> @T("女")</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>*@
+                    @if (sysEntity.RegistItems.Contains(",Mobile,") || sysEntity.RegistNotNullItems.Contains(",Mobile,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="password2confirm">@T("手机号码"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="mobile" class="form-control" />
+                                    @if (sysEntity.RegistNeedSMSVerification ?? false)
+                                    {
+                                        <span class="input-group-btn"><button id="regBtn" class="btn btn-primary" name="yt0" onclick="SendCode()" type="button">获取短信验证码</button></span>
+                                        @*<button id="regBtn2" class="btn btn-primary" name="yt1" onclick="SendVoiceCode()" type="button">获取语音验证码</button>*@
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("手机号码"):</label>
+
+                                <div class="col-sm-9">
+                                    <div class="input-group">
+                                        <input type="text" name="mobile" class="form-control" />
+                                        @if (sysEntity.RegistNeedSMSVerification ?? false)
+                                        {
+                                            <span class="input-group-btn"><button id="regBtn" class="btn btn-primary" name="yt0" onclick="SendCode()" type="button">获取短信验证码</button><button id="regBtn2" class="btn btn-primary" name="yt1" onclick="SendVoiceCode()" type="button">获取语音验证码</button></span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>*@
+                    }
+                    @if (sysEntity.RegistNeedSMSVerification ?? false)
+                    {
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="tel">@T("手机验证码"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="smscode" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",Email,") || sysEntity.RegistNotNullItems.Contains(",Email,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="email">@T("邮箱")*:</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    @*<span class="input-group-addon">
+                                            <i class="icon-envelope"></i>
+                                        </span>*@
+
+                                    <input type="email" name="email" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",IDCard,") || sysEntity.RegistNotNullItems.Contains(",IDCard,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="idcard">@T("身份证号码"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="idcard" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",WeiXin,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="qq">@T("微信号"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="qq" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",Question,") || sysEntity.RegistNotNullItems.Contains(",Question,"))
+                    {
+                        <div class="hr hr-dotted"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="question">@T("密保问题"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="question" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",Answer,") || sysEntity.RegistNotNullItems.Contains(",Answer,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="answer">@T("密保答案"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="answer" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",AliPay,") || sysEntity.RegistNotNullItems.Contains(",AliPay,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="bankuser">@T("支付宝帐号")*:</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" name="alipay" class="form-control" />
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",BitCoin,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="bankuser">@T("比特币地址"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="bitcoin" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",BankName,") || sysEntity.RegistNotNullItems.Contains(",BankName,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="bankname">@T("银行卡发卡行"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="bankname" class="form-control" />
+                                    @*@Html.DropDownList("bankname", new SelectList(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 5000 && x.IsUse).OrderBy(x => x.Sort).ToList(), "Name", "Name"), new { @class = "form-control" })*@
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",BankCard,") || sysEntity.RegistNotNullItems.Contains(",BankCard,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="bankcard">@T("银行卡号"):</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" name="bankcard" class="form-control" />
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",BankOfDeposit,") || sysEntity.RegistNotNullItems.Contains(",BankOfDeposit,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="bankofdeposit">@T("开户支行"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="bankofdeposit" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (sysEntity.RegistItems.Contains(",BankUser,") || sysEntity.RegistNotNullItems.Contains(",BankUser,"))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="bankuser">@T("银行卡户名"):</label>
+
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" name="bankuser" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @*<div class="form-group">
+                        <label class="col-sm-3 control-label" for="answer">@T("验证码"):</label>
+
+                        <div class="col-sm-9">
+                            <div class="clearfix">
+                                <input type="text" class="form-control" style="width:140px; float:left; margin-right:10px;" name="code" placeholder="" autocomplete="off" />
+                                <img id="imgCode" src="/UserCenter/Login/GetCodeImage?id=1" onclick="ChangeCheckCode();return false;" style="border:none; height:32px; float:right;" />
+                            </div>
+                        </div>
+                    </div>*@
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="btnlogin">&nbsp;</label>
+                        <div class="col-sm-9">
+
+                            <div class="clearfix">
+                                <button id="btnAdd" class="btn btn-primary btn-block btn-login" type="button">
+                                    <i class="entypo-login"></i>
+                                    @T("注册")
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="login-bottom-links">
+
+                    @MvcHtmlString.Create(MvcCore.Unity.Get<JN.Data.Service.ISysSettingService>().Single(1).CopyInfo)
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Bottom Scripts -->
+    <script src="/theme/neon/assets/js/bootstrap.js"></script>
+    <script src="~/js/jquery.form.js"></script>
+    <script type="text/javascript">
+        function ChangeCheckCode() {
+            var oldUrl = $('#imgCode').attr("src");
+            $('#imgCode').attr("src", oldUrl + '1');
+        }
+        $(".ckuser").on("click", function () {
+            var username = $("input[name='parentuser']").val();
+            var gourl = "/UserCenter/User/CheckUserInfo";
+            $.post(gourl, { username: username }, function (response) {
+                if (response.status == "ok") {
+                    alert(response.refMsg);
+                } else {
+                    alert(response.refMsg);
+                }
+            });
+        });
+
+        $("#btnAdd").click(function () {
+            //var province = $("#province").find("option:selected").text();
+            //var city = $("#city").find("option:selected").text();
+            //var county = $("#county").find("option:selected").text();
+            //$("#hidprovince").val(province);
+            //$("#hidcity").val(city);
+            //$("#hidcounty").val(county);
+
+            $("#frmAdd").ajaxSubmit({
+                url: "@Url.Action("Index")",
+                type: "post",
+                success: function (data) {
+                    if (data.Status == 200) {
+                        alert("@T("注册成功，即将为您跳转！")");
+                        location.href = "@(Url.Action("index", "login"))";
+                    } else {
+                        alert("@T("注册失败")：" + data.Message);
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        });
+
+        function SendCode() {
+            var myphone = $("input[name='mobile']").val();
+            $('#regBtn').attr("disabled", "disabled");
+            $('#regBtn').css('backgroundColor', '#999');
+            $('#regBtn').text('@T("发送中....")');
+            $.ajax({
+                type: "post",
+                url: "@(Url.Action("SendMobileMsm", "Reg"))",
+                data: { myphone: myphone },
+                success: function (data) {
+                    if (data.Status == 200) {
+                        $('#regBtn').text('@T("发送验证码")');
+                        alert("'@T("发送成功，请注意查收验证码!")");
+                    } else {
+                        $('#regBtn').removeAttr("disabled");
+                        $('#regBtn').css('backgroundColor', '#e98a00');
+                        $('#regBtn').text('@T("发送验证码")');
+                        alert(data.Message);
+                    }
+                },
+                error: function () {
+                    $('#regBtn').removeAttr("disabled");
+                    $('#regBtn').css('backgroundColor', '#e98a00');
+                    $('#regBtn').text('@T("发送验证码")');
+                    alert("'@T("发送失败，请稍后再试!")");
+                }
+            });
+        }
+
+        function SendVoiceCode() {
+            var myphone = $("input[name='mobile']").val();
+            $('#regBtn2').attr("disabled", "disabled");
+            $('#regBtn2').css('backgroundColor', '#999');
+            $('#regBtn2').text('@T("发送中....")');
+            $.ajax({
+                type: "post",
+                url: "@(Url.Action("SendMobileVoice", "Reg"))",
+                data: { myphone: myphone },
+                success: function (data) {
+                    if (data.Status == 200) {
+                        $('#regBtn2').text('@T("发送语音通话")');
+                        alert("'@T("发送成功，请注意接听语音电话!")");
+                    } else {
+                        $('#regBtn2').removeAttr("disabled");
+                        $('#regBtn2').css('backgroundColor', '#e98a00');
+                        $('#regBtn2').text('@T("发送语音通话")');
+                        alert(data.Message);
+                    }
+                },
+                error: function () {
+                    $('#regBtn2').removeAttr("disabled");
+                    $('#regBtn2').css('backgroundColor', '#e98a00');
+                    $('#regBtn2').text('@T("发送语音通话")');
+                    alert("@T("发送失败，请稍后再试!")");
+                }
+            });
+        }
+    </script>
+</body>
+</html>

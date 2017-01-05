@@ -1,0 +1,206 @@
+﻿@model JN.Data.User
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+}
+<!-- page specific plugin styles -->
+<link rel="stylesheet" href="/assets/css/jquery-ui-1.10.3.custom.min.css" />
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        <div class="tabbable">
+            <ul class="nav nav-tabs" id="myTab">
+                @*<li class="@(Request.Url.ToString().ToLower().Contains(("ApplyTakeCash?takeCoin=2001").ToLower()) ? "active" : "")">
+                    <a href="ApplyTakeCash?takeCoin=2001">
+                        @T(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().Single(2001).Name + "提现")
+                    </a>
+                </li>*@
+                @*<li class="@(Request.Url.ToString().ToLower().Contains(("ApplyTakeCash?takeCoin=2003").ToLower()) ? "active" : "")">
+                    <a href="ApplyTakeCash?takeCoin=2003">
+                        @T(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().Single(2003).Name + "提现")
+                    </a>
+                </li>
+                <li class="@(Request.Url.ToString().ToLower().Contains(("ApplyTakeCash?takeCoin=2006").ToLower()) ? "active" : "")">
+                    <a href="ApplyTakeCash?takeCoin=2006">
+                        @T(MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().Single(2006).Name + "提现")
+                    </a>
+                </li>*@
+            </ul>
+            <div class="tab-content">
+                <div class="table-responsive">
+                    @using (Ajax.BeginForm("ApplyTakeCash", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "saveForm", @class = "form-horizontal" }))
+                    {
+                          <input name="CheckValue" type="hidden" value="@ViewBag.CheckForm" />
+                        <input type="hidden" name="takeCoin" value="@ViewBag.takeCoin" />
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="mainwallet">@T("当前" + cacheSysParam.Single(x => x.ID == ViewBag.takeCoin).Name + "帐户余额"):</label>
+                            @{
+                        decimal fromWallet = 0;
+                        if (ViewBag.takeCoin == 2001)
+                        {
+                            fromWallet = Model.Wallet2001;
+                        }
+                        else if (ViewBag.takeCoin == 2003)
+                        {
+                            fromWallet = Model.Wallet2003;
+                        }
+                        else if (ViewBag.takeCoin == 2006)
+                        {
+                            fromWallet = Model.Wallet2006;
+                        }
+                            }
+                            <div class="col-xs-12 col-sm-2">
+                                <div class="clearfix">
+                                    <input type="text" name="mainwallet" class="form-control" value="@fromWallet.ToString("F2")" readonly="readonly" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="poundage">@T("提现手续费率"):</label>
+
+                            <div class="col-xs-12 col-sm-2">
+                                
+                                <input type="text" id="poundage" class="form-control" value="@(Convert.ToDecimal(ViewBag.Poundage) * 100)%" readonly="readonly" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="poundage">@T("提现金额"):</label>
+
+                            <div class="col-xs-12 col-sm-2">
+                                @{
+                        var List = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 3100 && x.IsUse && x.IsLock).OrderBy(x => x.Sort).ToList();
+                        <select id="drawmoney" name="drawmoney" class="form-control">
+                            <option value="0">@T("请选择提现额度")</option>
+                            @foreach (var item in List)
+                            {
+                                <option value="@item.Value">@(item.Value)</option>
+                            }
+                        </select>
+                                }
+                            </div>
+                        </div>
+
+
+                        @*<div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="drawmoney">@T("申请提现金额"):</label>
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="input-group">
+                                        <input type="text" id="takenumber" class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" style="width:100px" value="0" /><input type="text" style="width:70px" readonly class="form-control" value="×@(cacheSysParam.Single(x => x.ID == 1902).Value) = " /><input type="text" name="drawmoney" style="width:100px" class="form-control" value="0" readonly="readonly" />
+                                        <input type="hidden" id="takemultiple" value="@(cacheSysParam.Single(x => x.ID == 1902).Value)">
+                                        <input type="hidden" id="fromCoin" value="@ViewBag.takeCoin">
+                                    </div>
+                                    <span style="color:#f00; line-height:25px">@T("金额必须为" + cacheSysParam.Single(x => x.ID == 1902).Value + "的倍数且最低提现为500")</span>
+                                </div>
+                            </div>*@
+
+                        if (MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().Single(x => x.ID == 4507).Value == "1")  //开启提现验证
+                        {
+
+                            <div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="tel">@T("手机验证码"):</label>
+
+                                <div class="col-xs-12 col-sm-3">
+                                    <div class="input-group">
+                                        <input type="text" name="smscode" class="form-control" style="width:100px" /><span class="input-group-btn"><button id="regBtn" class="btn btn-primary" name="yt0" onclick="SendCode()" type="button">获取短信验证码</button></span>
+                                        @*<button id="regBtn2" class="btn btn-primary" name="yt1" onclick="SendVoiceCode()" type="button">获取语音验证码</button>*@
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @*<div class="form-group">
+                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="actualdrawmoney">@T("实际支付金额"):</label>
+
+                                <div class="col-xs-12 col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="icon-usd"></i>
+                                        </span>
+
+                                        <input type="text" name="actualdrawmoney" class="form-control" value="0" style="width:123px" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("备注"):</label>
+
+                            <div class="col-xs-12 col-sm-5">
+                                <textarea name="remark" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="hr hr-dotted"></div>
+
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info" type="submit">
+                                    <i class="icon-ok bigger-110"></i>
+                                    @T("提交申请")
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="icon-undo bigger-110"></i>
+                                    @T("重置")
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+<!-- page specific plugin scripts -->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript">
+    function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@(T("提现申请成功，请耐心等待审核，即将为您跳转页面"))!");
+            location.href = "@(Url.Action("takecash"))";
+        } else {
+            alert("@(T("提现失败"))：" + data.Message);
+        }
+    }
+    //jQuery(function ($) {
+    //    $("#takenumber").on('keyup', function () {
+    //        $("input[name='drawmoney']").val(parseInt($("#takenumber").val()) * parseInt($("#takemultiple").val()));
+    //        $("input[name='actualdrawmoney']").val(parseFloat($("#takenumber").val()) * parseFloat($("#takemultiple").val()) * (1 - parseFloat($("#poundage").val())));
+    //    });
+    //});
+</script>
+<script type="text/javascript">
+
+    function SendCode() {
+        var myphone = "@(Model.Mobile)";
+        $('#regBtn').attr("disabled", "disabled");
+        $('#regBtn').css('backgroundColor', '#999');
+        $('#regBtn').text('@T("发送中....")');
+        $.ajax({
+            type: "post",
+            url: "@(Url.Action("SendMobileMsm", "Reg"))",
+            data: { myphone: myphone },
+            success: function (data) {
+                if (data.Status == 200) {
+                    $('#regBtn').text('@T("发送验证码")');
+                    alert("@T("发送成功，请注意查收验证码!")");
+                } else {
+                    $('#regBtn').removeAttr("disabled");
+                    $('#regBtn').css('backgroundColor', '#e98a00');
+                    $('#regBtn').text('@T("发送验证码")');
+                    alert(data.Message);
+                }
+            },
+            error: function () {
+                $('#regBtn').removeAttr("disabled");
+                $('#regBtn').css('backgroundColor', '#e98a00');
+                $('#regBtn').text('@T("发送验证码")');
+                alert("@T("发送失败，请稍后再试!")");
+            }
+        });
+    }
+</script>

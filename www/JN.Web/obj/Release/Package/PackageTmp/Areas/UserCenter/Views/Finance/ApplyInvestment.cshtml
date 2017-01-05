@@ -1,0 +1,103 @@
+﻿@model JN.Data.User
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+}
+<!-- page specific plugin styles -->
+<link rel="stylesheet" href="/assets/css/jquery-ui-1.10.3.custom.min.css" />
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        @using (Ajax.BeginForm("ApplyInvestment", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "saveForm", @class = "form-horizontal" }))
+        {
+            if (ViewBag.InvestmentType == 2)
+            {
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="recuser">@T("复投补差别"):</label>
+
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="clearfix">
+                            @{
+                var List = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 1000 && x.IsUse).OrderBy(x => x.Sort).ToList();
+                <select id="RepeatInvestment" name="RepeatInvestment" class="form-control">
+                    <option value="@Model.Investment">@T("请选择级别")</option>
+                    @foreach (var item in List)
+                    {
+                        if (Model.Investment < item.Value.ToDecimal())
+                        {
+                            <option value="@item.Value">@(item.Name + "(" + item.Value + ")")</option>
+                        }
+
+                    }
+                </select>
+
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("付款金额"):</label>
+
+                <div class="col-xs-12 col-sm-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        </span>
+                        <input type="text" id="BuyMoney" name="BuyMoney" class="form-control" style="width:123px" value="@ViewBag.Investment" readonly />
+                        <input type="hidden" id="CheckMoney" name="CheckMoney" class="form-control" style="width:123px" value="@ViewBag.CheckMoney" readonly />
+                        <input type="hidden" id="InvestmentType" name="InvestmentType" class="form-control" style="width:123px" value="@ViewBag.InvestmentType" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("备注"):</label>
+
+                <div class="col-xs-12 col-sm-5">
+                    <textarea name="remark" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="hr hr-dotted"></div>
+
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="icon-ok bigger-110"></i>
+                        @T("提交")
+                    </button>
+
+                    &nbsp; &nbsp; &nbsp;
+                    <button class="btn" type="reset">
+                        <i class="icon-undo bigger-110"></i>
+                        @T("重置")
+                    </button>
+                </div>
+            </div>
+        }
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+<!-- page specific plugin scripts -->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript">
+    function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@T("已提交，请根据编码点击付款，即将为您跳转页面!")");
+            location.href = "@(Url.Action("ApplyInvertmentList"))";
+        } else {
+            alert("@T("充值失败：")" + data.Message);
+        }
+    }
+    jQuery(function ($) {
+        $("#RepeatInvestment").on('change', function () {
+            $("input[name='BuyMoney']").val(parseInt($("#RepeatInvestment").val()) - parseInt($("#CheckMoney").val()));
+        });
+        $('input[name=rechargedate]').datepicker().prev().on("click", function () {
+            $(this).next().focus();
+        });
+    });
+</script>

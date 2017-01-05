@@ -1,0 +1,106 @@
+﻿@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+}
+<!-- page specific plugin styles -->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        @using (Ajax.BeginForm("Write", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "frmTransfer", @class = "form-horizontal" }))
+        {
+            @*<form id="validation-form" class="form-horizontal" enctype="multipart/form-data" method="post">*@
+            <div class="form-group" style="display:none">
+                <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-field-recipient">@T("收件人"):</label>
+
+                <div class="col-sm-6">
+                    <span class="input-icon">
+                        <input type="text" name="recipient" readonly value="@ViewBag.recipient" />
+                        <i class="icon-user"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-subject">@T("邮件类型"):</label>
+
+                <div class="col-sm-2">
+                    <select name="messagetype">
+                        @{ var paramlist = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 5100).OrderBy(x => x.Sort).ToList();
+                         if (paramlist.Count > 0)
+                         {
+                             foreach (var param in paramlist)
+                             {
+                                <option value="@T(param.Name)">@T(param.Name)</option>
+                             }
+                         }
+                        }
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-subject">@T("邮件主题"):</label>
+
+                <div class="col-sm-6 col-xs-8">
+                    <input type="text" class="col-xs-10" name="subject" value="@ViewBag.subject" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">
+                    <span class="inline space-24 hidden-480"></span>
+                    @T("邮件内容"):
+                </label>
+
+                <div class="col-sm-8">
+                    <textarea name="content" class="col-xs-10" rows="10">@ViewBag.content</textarea>
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">
+                    <span class="inline space-24 hidden-480"></span>
+                    @T("附件"):
+                </label>
+                <div class="col-sm-8">
+                    <input type="file" name="imgurl" class="col-xs-6" />
+                </div>
+            </div>*@
+
+            <div class="hr hr-dotted"></div>
+
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="icon-ok bigger-110"></i>
+                        @T("发送")
+                    </button>
+
+                    &nbsp; &nbsp; &nbsp;
+                    <button class="btn" type="reset">
+                        <i class="icon-undo bigger-110"></i>
+                        @T("重置")
+                    </button>
+                </div>
+            </div>
+        }
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+        
+    </div><!-- /.col -->
+        <!-- page specific plugin scripts -->
+        <!--[if lte IE 8]>
+          <script src="/assets/js/excanvas.min.js"></script>
+        <![endif]-->
+        <script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
+        <script type="text/javascript">
+            function afterPost(data) {
+                if (data.result == "ok") {
+                    alert("操作成功!");
+                    window.location.href = '@Url.Action("Sent")';
+                } else {
+                    alert("操作失败：" + data.msg);
+                }
+            }
+        </script>

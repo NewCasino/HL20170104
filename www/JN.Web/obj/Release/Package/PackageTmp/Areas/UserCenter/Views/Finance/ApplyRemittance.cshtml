@@ -1,0 +1,208 @@
+﻿@model JN.Data.User
+@{
+    Layout = "~/Areas/UserCenter/Views/Shared/_Layout" + JN.Services.Tool.ConfigHelper.GetConfigString("Theme") + ".cshtml";
+    var cacheSysParam = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().ListCache("sysparams", x => x.ID < 4000);
+}
+<!-- page specific plugin styles -->
+<link rel="stylesheet" href="/assets/css/jquery-ui-1.10.3.custom.min.css" />
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        <div class="alert alert-block alert-success">
+            <button type="button" class="close" data-dismiss="alert">
+                <i class="icon-remove"></i>
+            </button>
+
+            <h3>@T("公司汇款帐户")</h3>
+            <table id="sample-table-1" class="table table-bordered">
+                <tr>
+                    <th class="center">
+                    </th>
+                    <th>@T("账户名")</th>
+                    <th>@T("帐号")</th>
+                </tr>
+                @{
+                    int i = 1;
+                    var bankLst = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 5500 && String.IsNullOrEmpty(x.Remark)).OrderByDescending(x => x.Sort).ToList();
+                    if (bankLst.Count > 0)
+                    {
+
+                        foreach (var _bank in bankLst)
+                        {
+                            <tr>
+                                <td align="center">@i.ToString()</td>
+                                <td>@_bank.Name</td>
+                                <td>@_bank.Value</td>
+                            </tr>
+                            i++;
+                        }
+
+                    }
+                }
+            </table>
+        </div>
+        @*@using (Ajax.BeginForm("ApplyRemittance", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "afterPost" }, new { id = "saveForm", @class = "form-horizontal", @enctype = "multipart/form-data" }))
+            {*@
+        <form id="Postform" action="@Url.Action("ApplyRemittance")" class="form-horizontal" enctype="multipart/form-data" method="post">
+            <input name="CheckValue" type="hidden" value="@ViewBag.CheckForm" />
+            @if (ViewBag.InvestmentType == 2)
+            {
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="recuser">@T("复投补差别"):</label>
+
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="clearfix">
+                            @{
+                var List = MvcCore.Unity.Get<JN.Data.Service.ISysParamService>().List(x => x.PID == 1000 && x.IsUse).OrderBy(x => x.Sort).ToList();
+                <select id="RepeatInvestment" name="RepeatInvestment" class="form-control">
+                    <option value="@Model.Investment">@T("请选择级别")</option>
+                    @foreach (var item in List)
+                    {
+                        if (Model.Investment < item.Value.ToDecimal())
+                        {
+                            <option value="@item.Value">@item.Name</option>
+                        }
+
+                    }
+                </select>
+
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="recuser">@T("复投补差别"):</label>
+
+                <div class="col-xs-12 col-sm-3">
+                    <div class="clearfix">
+                        <select id="RemittanceType" name="RemittanceType" class="form-control">
+                            <option value="">@T("请选择支付方式")</option>
+                            <option value="支付宝">@T("支付宝")</option>
+                            <option value="银行卡">@T("银行卡")</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("付款金额"):</label>
+
+                <div class="col-xs-12 col-sm-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        </span>
+                        <input type="text" id="BuyMoney" name="BuyMoney" class="form-control" style="width:123px" value="@ViewBag.Investment" readonly />
+                        <input type="hidden" id="CheckMoney" name="CheckMoney" class="form-control" style="width:123px" value="@ViewBag.CheckMoney" readonly />
+                        <input type="hidden" id="InvestmentType" name="InvestmentType" class="form-control" style="width:123px" value="@ViewBag.InvestmentType" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("上传支付截图"):</label>
+
+                <div class="col-xs-12 col-sm-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        </span>
+
+                        <input type="file" name="PayImg" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("付款人账户"):</label>
+
+                <div class="col-xs-12 col-sm-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        </span>
+
+                        <input type="text" name="rechargeway" class="form-control" style="width:123px" />
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="drawmoney">@T("汇款金额"):</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="input-group">
+                            <input type="text" id="takenumber" class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" style="width:100px" value="0" /><input type="text" style="width: 70px" readonly class="form-control" value="×@(cacheSysParam.Single(x => x.ID == 1904).Value) = " /><input type="text" name="rechargeamount" style="width:100px" class="form-control" value="0" readonly="readonly" />
+                            <input type="hidden" id="takemultiple" value="@cacheSysParam.Single(x => x.ID == 1904).Value">
+                        </div>
+                        <span style="color:#f00; line-height:25px">* @T("为了确认汇款，请在汇款数后加尾数如：1000.5或1001并在备注里注明实际汇款金额")</span>
+                    </div>
+                </div>*@
+
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">@T("备注"):</label>
+
+                <div class="col-xs-12 col-sm-5">
+                    <textarea name="remark" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="hr hr-dotted"></div>
+
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" onclick="PostForm()" type="submit">
+                        <i class="icon-ok bigger-110"></i>
+                        @T("提交汇款单")
+                    </button>
+
+                    &nbsp; &nbsp; &nbsp;
+                    <button class="btn" type="reset">
+                        <i class="icon-undo bigger-110"></i>
+                        @T("重置")
+                    </button>
+                </div>
+            </div>
+        </form>
+        @*}*@
+        <!-- PAGE CONTENT ENDS -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+<!-- page specific plugin scripts -->
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript">
+    @*function PostForm() {
+        alert(1);
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ApplyRemittance")",
+            OnSuccess: function afterPost(data) {
+                if (data.Status == 200) {
+                    alert("@T("充值汇款单已提交，请耐心等待审核，即将为您跳转页面!")");
+                    location.href = "@(Url.Action("remittance"))";
+                } else {
+                    alert(2);
+                    alert("@T("充值失败：")" + data.Message);
+                }
+            }
+        });
+    }*@
+    @*function afterPost(data) {
+        if (data.Status == 200) {
+            alert("@T("充值汇款单已提交，请耐心等待公司审核，即将为您跳转页面!")");
+            location.href = "@(Url.Action("remittance"))";
+        } else {
+            alert("@T("充值失败：")" + data.Message);
+        }
+    }*@
+    jQuery(function ($) {
+        $("#RepeatInvestment").on('change', function () {
+            $("input[name='BuyMoney']").val(parseInt($("#RepeatInvestment").val()) - parseInt($("#CheckMoney").val()));
+        });
+        $("#takenumber").on('keyup', function () {
+            $("input[name='rechargeamount']").val(parseInt($("#takenumber").val()) * parseInt($("#takemultiple").val()));
+        });
+        $('input[name=rechargedate]').datepicker().prev().on("click", function () {
+            $(this).next().focus();
+        });
+    });
+</script>

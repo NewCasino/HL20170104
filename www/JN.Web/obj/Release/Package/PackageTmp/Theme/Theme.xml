@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<themes>
+  <theme name="ace" value="ace" />
+  <theme name="adminex" value="adminex" />
+  <theme name="atlant" value="atlant" />
+  <theme name="metronic" value="metronic" />
+  <theme name="metronic2" value="metronic2" />
+  <theme name="metronic3" value="metronic3" />
+  <theme name="neon" value="neon" />
+  <theme name="ultimo" value="ultimo" />
+  <theme name="0613" value="0613" />
+</themes>
